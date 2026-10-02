@@ -29,6 +29,8 @@ use Illuminate\Support\Str;
     'sku',
     'barcode',
     'price',
+    'cost',
+    'supplier_id',
     'currency',
     'stock',
     'reorder_level',
@@ -91,6 +93,7 @@ class Product extends Model
         return [
             'category' => ProductCategory::class,
             'price' => 'decimal:2',
+            'cost' => 'decimal:2',
             'tax_rate' => 'decimal:2',
             'stock' => 'integer',
             'reorder_level' => 'integer',

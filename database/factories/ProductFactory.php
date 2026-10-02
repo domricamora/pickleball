@@ -32,6 +32,9 @@ class ProductFactory extends Factory
             'category' => fake()->randomElement(ProductCategory::values()),
             'sku' => strtoupper(fake()->bothify('SKU-####')),
             'price' => fake()->randomElement(['250.00', '450.00', '850.00', '1200.00']),
+            // Set explicitly: an omitted value becomes NULL in PHP and would
+            // bypass the column default, breaking purchase orders.
+            'cost' => fake()->randomElement(['120.00', '200.00', '400.00', '600.00']),
             'currency' => 'PHP',
             'stock' => 20,
             'reorder_level' => 5,
