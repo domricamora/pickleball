@@ -99,5 +99,22 @@ class FortifyServiceProvider extends ServiceProvider
                 ($credentialId ?: $request->session()->getId()).'|'.$request->ip()
             );
         });
+
+        /*
+        |----------------------------------------------------------------------
+        | Application rate limits (plan.md §24)
+        |----------------------------------------------------------------------
+        | Public booking is the most attractive thing to hammer, so it gets
+        | the tightest limit. The rest are generous enough not to get in a
+        | real player's way.
+        */
+
+        RateLimiter::for('booking', function (Request $request) {
+            return Limit::perMinute(10)->by($request->user()?->id ?: $request->ip());
+        });
+
+        RateLimiter::for('public-pages', function (Request $request) {
+            return Limit::perMinute(120)->by($request->ip());
+        });
     }
 }

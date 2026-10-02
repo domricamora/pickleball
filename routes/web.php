@@ -38,7 +38,9 @@ Route::get('/blog', [MarketingController::class, 'blog'])->name('blog.index');
 */
 
 Route::get('/book', [BookingController::class, 'show'])->name('book.index');
-Route::post('/book', [BookingController::class, 'store'])->name('book.store');
+Route::post('/book', [BookingController::class, 'store'])
+    ->middleware('throttle:booking')
+    ->name('book.store');
 
 /*
 |--------------------------------------------------------------------------
