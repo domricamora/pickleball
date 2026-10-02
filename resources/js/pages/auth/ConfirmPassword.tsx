@@ -2,13 +2,14 @@ import { Form, useForm } from '@inertiajs/react';
 import AuthLayout from '@/layouts/AuthLayout';
 import Seo from '@/components/seo/Seo';
 import { AuthButton, TextField } from '@/components/auth/AuthFields';
+import { withBasePath } from '@/lib/format';
 
 export default function ConfirmPassword() {
     const form = useForm({ password: '' });
 
     const submit = (event: React.FormEvent) => {
         event.preventDefault();
-        form.post('/user/confirm-password', { onFinish: () => form.reset() });
+        form.post(withBasePath('/user/confirm-password'), { onFinish: () => form.reset() });
     };
 
     return (

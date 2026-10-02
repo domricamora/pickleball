@@ -1,8 +1,8 @@
-import { Form, Link, usePage } from '@inertiajs/react';
-import { useForm } from '@inertiajs/react';
+import { Form, Link, useForm, usePage } from '@inertiajs/react';
 import AuthLayout from '@/layouts/AuthLayout';
 import Seo from '@/components/seo/Seo';
 import { AuthButton, TextField } from '@/components/auth/AuthFields';
+import { withBasePath } from '@/lib/format';
 
 interface LoginProps {
     canResetPassword?: boolean;
@@ -15,7 +15,7 @@ export default function Login({ canResetPassword = true }: LoginProps) {
 
     const submit = (event: React.FormEvent) => {
         event.preventDefault();
-        form.post('/login', { onFinish: () => form.reset('password') });
+        form.post(withBasePath('/login'), { onFinish: () => form.reset('password') });
     };
 
     return (
@@ -61,7 +61,7 @@ export default function Login({ canResetPassword = true }: LoginProps) {
 
                     {canResetPassword && (
                         <Link
-                            href="/forgot-password"
+                            href={withBasePath('/forgot-password')}
                             className="text-pickle-700 hover:text-pickle-900 mt-2 inline-block text-sm transition-colors"
                         >
                             Forgot your password?
@@ -86,7 +86,7 @@ export default function Login({ canResetPassword = true }: LoginProps) {
             <p className="text-slate mt-6 text-center text-sm">
                 New here?{' '}
                 <Link
-                    href="/register"
+                    href={withBasePath('/register')}
                     className="text-pickle-700 hover:text-pickle-900 font-semibold transition-colors"
                 >
                     Create an account

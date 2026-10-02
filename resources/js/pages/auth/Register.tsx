@@ -2,6 +2,7 @@ import { Form, Link, useForm, usePage } from '@inertiajs/react';
 import AuthLayout from '@/layouts/AuthLayout';
 import Seo from '@/components/seo/Seo';
 import { AuthButton, TextField } from '@/components/auth/AuthFields';
+import { withBasePath } from '@/lib/format';
 
 export default function Register() {
     const { errors } = usePage<{ errors: Record<string, string> }>().props;
@@ -16,7 +17,7 @@ export default function Register() {
 
     const submit = (event: React.FormEvent) => {
         event.preventDefault();
-        form.post('/register', { onFinish: () => form.reset('password', 'password_confirmation') });
+        form.post(withBasePath('/register'), { onFinish: () => form.reset('password', 'password_confirmation') });
     };
 
     return (
@@ -87,7 +88,10 @@ export default function Register() {
 
             <p className="text-slate mt-6 text-center text-sm">
                 Already have an account?{' '}
-                <Link href="/login" className="text-pickle-700 hover:text-pickle-900 font-semibold transition-colors">
+                <Link
+                    href={withBasePath('/login')}
+                    className="text-pickle-700 hover:text-pickle-900 font-semibold transition-colors"
+                >
                     Log in
                 </Link>
             </p>

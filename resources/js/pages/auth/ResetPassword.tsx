@@ -2,6 +2,7 @@ import { Form, useForm } from '@inertiajs/react';
 import AuthLayout from '@/layouts/AuthLayout';
 import Seo from '@/components/seo/Seo';
 import { AuthButton, TextField } from '@/components/auth/AuthFields';
+import { withBasePath } from '@/lib/format';
 
 interface ResetPasswordProps {
     email: string;
@@ -18,7 +19,7 @@ export default function ResetPassword({ email, token }: ResetPasswordProps) {
 
     const submit = (event: React.FormEvent) => {
         event.preventDefault();
-        form.post('/reset-password', { onFinish: () => form.reset('password', 'password_confirmation') });
+        form.post(withBasePath('/reset-password'), { onFinish: () => form.reset('password', 'password_confirmation') });
     };
 
     return (

@@ -1,5 +1,6 @@
 import { Link, router } from '@inertiajs/react';
 import { AdminButton, AdminPage, StatusBadge } from '@/components/admin/AdminUi';
+import { withBasePath } from '@/lib/format';
 
 interface Court {
     id: number;
@@ -26,7 +27,7 @@ interface IndexProps {
 export default function Index({ courts, branches, filters }: IndexProps) {
     const applyFilter = (key: 'branch_id' | 'status', value: string) => {
         router.get(
-            '/admin/courts',
+            withBasePath('/admin/courts'),
             {
                 branch_id: filters.branch_id ?? undefined,
                 status: filters.status ?? undefined,
@@ -78,7 +79,7 @@ function EmptyCourts() {
                 Add your first court to start taking bookings. You can set its surface, capacity and opening hours next.
             </p>
             <Link
-                href="/admin/courts/create"
+                href={withBasePath('/admin/courts/create')}
                 className="bg-energetic-500 hover:bg-energetic-600 mt-6 inline-block rounded-card px-6 py-3 font-semibold text-white transition-colors"
             >
                 Add court

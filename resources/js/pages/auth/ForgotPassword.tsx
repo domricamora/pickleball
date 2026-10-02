@@ -2,6 +2,7 @@ import { Form, Link, useForm, usePage } from '@inertiajs/react';
 import AuthLayout from '@/layouts/AuthLayout';
 import Seo from '@/components/seo/Seo';
 import { AuthButton, TextField } from '@/components/auth/AuthFields';
+import { withBasePath } from '@/lib/format';
 
 export default function ForgotPassword() {
     const { errors, status } = usePage<{ errors: Record<string, string>; status?: string }>().props;
@@ -10,7 +11,7 @@ export default function ForgotPassword() {
 
     const submit = (event: React.FormEvent) => {
         event.preventDefault();
-        form.post('/forgot-password');
+        form.post(withBasePath('/forgot-password'));
     };
 
     return (
@@ -43,7 +44,10 @@ export default function ForgotPassword() {
             </Form>
 
             <p className="text-slate mt-6 text-center text-sm">
-                <Link href="/login" className="text-pickle-700 hover:text-pickle-900 font-semibold transition-colors">
+                <Link
+                    href={withBasePath('/login')}
+                    className="text-pickle-700 hover:text-pickle-900 font-semibold transition-colors"
+                >
                     Back to log in
                 </Link>
             </p>

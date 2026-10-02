@@ -2,6 +2,7 @@ import { Link } from '@inertiajs/react';
 import type { ReactNode } from 'react';
 import { usePage } from '@inertiajs/react';
 import type { SharedProps } from '@/types';
+import { withBasePath } from '@/lib/format';
 
 interface AuthLayoutProps {
     children: ReactNode;
@@ -35,7 +36,7 @@ export default function AuthLayout({ children, title, subtitle }: AuthLayoutProp
                     aria-hidden
                 />
 
-                <Link href="/" className="relative flex items-center gap-2">
+                <Link href={withBasePath('/')} className="relative flex items-center gap-2">
                     <span className="bg-lime-accent grid h-10 w-10 place-items-center rounded-xl text-lg font-extrabold text-pickle-900">
                         P
                     </span>
@@ -55,7 +56,7 @@ export default function AuthLayout({ children, title, subtitle }: AuthLayoutProp
 
             <div className="flex flex-col justify-center px-5 py-10 sm:px-8">
                 <div className="mx-auto w-full max-w-md">
-                    <Link href="/" className="mb-8 flex items-center gap-2 lg:hidden">
+                    <Link href={withBasePath('/')} className="mb-8 flex items-center gap-2 lg:hidden">
                         <span className="bg-pickle-500 grid h-9 w-9 place-items-center rounded-xl text-lg font-extrabold text-white">
                             P
                         </span>

@@ -2,6 +2,7 @@ import { Form, useForm, usePage } from '@inertiajs/react';
 import PageLayout, { Section } from '@/layouts/PageLayout';
 import Seo from '@/components/seo/Seo';
 import { TextField } from '@/components/auth/AuthFields';
+import { withBasePath } from '@/lib/format';
 import type { SharedProps } from '@/types';
 
 interface ProfileProps {
@@ -35,7 +36,7 @@ export default function Profile({ user, mustVerifyEmail, status }: ProfileProps)
 
     const submit = (event: React.FormEvent) => {
         event.preventDefault();
-        form.put('/profile');
+        form.put(withBasePath('/profile'));
     };
 
     return (
@@ -58,7 +59,7 @@ export default function Profile({ user, mustVerifyEmail, status }: ProfileProps)
                 {mustVerifyEmail && !shared.auth.user?.email_verified_at && (
                     <div className="border-energetic-400 bg-night-850 text-mist-50 rounded-card mt-6 border-l-4 px-4 py-3 text-sm">
                         <p className="font-semibold">Email not verified.</p>
-                        <Form action="/email/verification-notification" method="post" className="mt-2">
+                        <Form action={withBasePath('/email/verification-notification')} method="post" className="mt-2">
                             <button type="submit" className="text-energetic-300 font-semibold underline">
                                 Resend the verification email
                             </button>

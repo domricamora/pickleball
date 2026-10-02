@@ -1,6 +1,7 @@
 import { Form, useForm } from '@inertiajs/react';
 import { AdminPage } from '@/components/admin/AdminUi';
 import { SelectField, SubmitRow, TextAreaField, TextField } from '@/components/admin/FormFields';
+import { withBasePath } from '@/lib/format';
 
 export interface FacilityFormProps {
     regions: Record<string, string>;
@@ -99,9 +100,9 @@ export default function FacilityForm({ regions, facility }: FacilityFormProps) {
         }
 
         if (editing && facility) {
-            form.put(`/admin/facilities/${facility.id}`);
+            form.put(withBasePath(`/admin/facilities/${facility.id}`));
         } else {
-            form.post('/admin/facilities');
+            form.post(withBasePath('/admin/facilities'));
         }
     };
     return (

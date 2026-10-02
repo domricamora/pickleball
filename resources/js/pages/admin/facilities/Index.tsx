@@ -1,5 +1,6 @@
 import { Link } from '@inertiajs/react';
 import { AdminButton, AdminPage, StatusBadge } from '@/components/admin/AdminUi';
+import { withBasePath } from '@/lib/format';
 
 interface Facility {
     id: number;
@@ -30,7 +31,7 @@ export default function Index({ facilities }: { facilities: Facility[] }) {
                         Add your first court location, then add the courts inside it.
                     </p>
                     <Link
-                        href="/admin/facilities/create"
+                        href={withBasePath('/admin/facilities/create')}
                         className="bg-energetic-500 hover:bg-energetic-600 mt-6 inline-block rounded-card px-6 py-3 font-semibold text-white transition-colors"
                     >
                         Add facility

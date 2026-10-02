@@ -2,6 +2,7 @@ import { router, usePage } from '@inertiajs/react';
 import PageLayout, { Section } from '@/layouts/PageLayout';
 import Seo from '@/components/seo/Seo';
 import type { SharedProps } from '@/types';
+import { withBasePath } from '@/lib/format';
 
 interface Slot {
     starts_at: string;
@@ -50,7 +51,7 @@ export default function Book({ branches, courts, selectedBranchId, selectedDate,
 
     const navigate = (params: Record<string, string | number | null>) => {
         router.get(
-            '/book',
+            withBasePath('/book'),
             {
                 branch_id: params.branch_id ?? null,
                 date: params.date ?? null,
@@ -151,7 +152,7 @@ export default function Book({ branches, courts, selectedBranchId, selectedDate,
                                                     type="button"
                                                     onClick={() =>
                                                         router.post(
-                                                            '/book',
+                                                            withBasePath('/book'),
                                                             {
                                                                 court_id: court.id,
                                                                 starts_at: slot.starts_at,

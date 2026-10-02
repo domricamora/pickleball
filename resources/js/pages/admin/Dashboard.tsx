@@ -1,5 +1,6 @@
 import { router } from '@inertiajs/react';
 import { AdminPage, StatusBadge } from '@/components/admin/AdminUi';
+import { withBasePath } from '@/lib/format';
 
 interface Kpis {
     revenue: string;
@@ -60,7 +61,7 @@ export default function Dashboard({
     branches,
 }: DashboardProps) {
     const setRange = (days: number) => {
-        router.get('/admin', { range: days }, { preserveState: true, replace: true });
+        router.get(withBasePath('/admin'), { range: days }, { preserveState: true, replace: true });
     };
 
     const tiles = [

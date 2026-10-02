@@ -32,7 +32,7 @@ export default function AdminLayout({ children, title, subtitle, actions }: Admi
     return (
         <div className="bg-pickle-900 flex min-h-screen flex-col lg:flex-row">
             <aside className="flex shrink-0 flex-col bg-pickle-900 px-4 py-6 lg:w-64 lg:px-6">
-                <Link href="/admin" className="flex items-center gap-2">
+                <Link href={withBasePath('/admin')} className="flex items-center gap-2">
                     <span className="bg-lime-accent grid h-9 w-9 place-items-center rounded-xl text-lg font-extrabold text-pickle-900">
                         P
                     </span>
@@ -64,7 +64,7 @@ export default function AdminLayout({ children, title, subtitle, actions }: Admi
                         {shared.auth.role}
                     </p>
                     <Link
-                        href="/"
+                        href={withBasePath('/')}
                         className="text-pickle-300 hover:text-lime-accent mt-3 inline-block text-xs transition-colors"
                     >
                         Back to public site

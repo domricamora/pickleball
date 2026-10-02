@@ -1,6 +1,7 @@
 import { Form, useForm } from '@inertiajs/react';
 import { AdminPage } from '@/components/admin/AdminUi';
 import { SelectField, SubmitRow, TextAreaField, TextField } from '@/components/admin/FormFields';
+import { withBasePath } from '@/lib/format';
 
 export interface CourtFormProps {
     branches: Array<{ id: number; name: string }>;
@@ -95,9 +96,9 @@ export default function CourtForm({ branches, defaults, court }: CourtFormProps)
         form.setData('notes', form.data.notes === '' ? null : form.data.notes);
 
         if (editing && court) {
-            form.put(`/admin/courts/${court.id}`);
+            form.put(withBasePath(`/admin/courts/${court.id}`));
         } else {
-            form.post('/admin/courts');
+            form.post(withBasePath('/admin/courts'));
         }
     };
     return (

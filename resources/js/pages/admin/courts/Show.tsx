@@ -1,6 +1,6 @@
 import { router } from '@inertiajs/react';
 import { AdminButton, AdminPage, StatusBadge } from '@/components/admin/AdminUi';
-import { peso } from '@/lib/format';
+import { peso, withBasePath } from '@/lib/format';
 
 interface ShowProps {
     court: {
@@ -29,7 +29,7 @@ interface ShowProps {
 export default function Show({ court, weekdays }: ShowProps) {
     const remove = () => {
         if (confirm(`Remove ${court.name}?`)) {
-            router.delete(`/admin/courts/${court.id}`);
+            router.delete(withBasePath(`/admin/courts/${court.id}`));
         }
     };
 

@@ -3,6 +3,7 @@ import { useEffect } from 'react';
 import AuthLayout from '@/layouts/AuthLayout';
 import Seo from '@/components/seo/Seo';
 import { AuthButton } from '@/components/auth/AuthFields';
+import { withBasePath } from '@/lib/format';
 
 interface VerifyEmailProps {
     status?: string;
@@ -16,7 +17,7 @@ export default function VerifyEmail({ status }: VerifyEmailProps) {
     // Fortify sends the verification link automatically on arrival.
     useEffect(() => {
         if (status === undefined) {
-            form.post('/email/verification-notification');
+            form.post(withBasePath('/email/verification-notification'));
         }
         // Intentionally runs once on mount.
         // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -35,7 +36,7 @@ export default function VerifyEmail({ status }: VerifyEmailProps) {
                         Your email address is verified.
                     </p>
                     <Link
-                        href="/dashboard"
+                        href={withBasePath('/dashboard')}
                         className="bg-energetic-500 hover:bg-energetic-600 mt-5 block rounded-card px-6 py-3 text-center font-semibold text-white transition-colors"
                     >
                         Continue to dashboard
@@ -59,14 +60,14 @@ export default function VerifyEmail({ status }: VerifyEmailProps) {
                     <Form
                         onSubmit={(event) => {
                             event.preventDefault();
-                            form.post('/email/verification-notification');
+                            form.post(withBasePath('/email/verification-notification'));
                         }}
                     >
                         <AuthButton loading={form.processing}>Resend verification email</AuthButton>
                     </Form>
 
                     <Link
-                        href="/logout"
+                        href={withBasePath('/logout')}
                         method="post"
                         as="button"
                         className="text-slate mt-6 block w-full text-center text-sm transition-colors hover:text-pickle-700"

@@ -2,6 +2,7 @@ import { Form, Link, useForm, usePage } from '@inertiajs/react';
 import AuthLayout from '@/layouts/AuthLayout';
 import Seo from '@/components/seo/Seo';
 import { AuthButton, TextField } from '@/components/auth/AuthFields';
+import { withBasePath } from '@/lib/format';
 
 interface ChallengeProps {
     /** Fortify requests a recovery code when the device is lost. */
@@ -16,7 +17,7 @@ export default function TwoFactorChallenge({ recovery = false }: ChallengeProps)
 
     const submit = (event: React.FormEvent) => {
         event.preventDefault();
-        form.post('/two-factor-challenge');
+        form.post(withBasePath('/two-factor-challenge'));
     };
 
     return (
@@ -74,7 +75,7 @@ export default function TwoFactorChallenge({ recovery = false }: ChallengeProps)
                 </button>
                 <span className="text-slate mx-2">·</span>
                 <Link
-                    href="/logout"
+                    href={withBasePath('/logout')}
                     method="post"
                     as="button"
                     className="text-slate hover:text-pickle-700 transition-colors"

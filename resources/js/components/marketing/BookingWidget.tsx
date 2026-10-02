@@ -1,6 +1,7 @@
 import { router } from '@inertiajs/react';
 import { ArrowUpRight, CalendarDays, Clock, Users } from 'lucide-react';
 import { useState } from 'react';
+import { withBasePath } from '@/lib/format';
 
 /** Bookable start times, in 24-hour Manila time. */
 const times = ['06:00', '08:00', '10:00', '14:00', '16:00', '18:00', '20:00'];
@@ -69,7 +70,7 @@ export default function BookingWidget() {
     const submit = (event: React.FormEvent) => {
         event.preventDefault();
 
-        router.get('/book', { date, time, players }, { preserveScroll: false });
+        router.get(withBasePath('/book'), { date, time, players }, { preserveScroll: false });
     };
 
     return (
