@@ -5,8 +5,8 @@ operating contract for working in this repository.
 
 ## Status
 
-Phases 0 to 5 are complete. See `PHASE_STATUS.md`.
-Next phase: **Phase 6 — Customer / Player CRM**.
+Phases 0 to 8 are complete. See `PHASE_STATUS.md`.
+Next phase: **Phase 9 — POS & Product Sales**.
 
 ## Stack
 

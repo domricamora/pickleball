@@ -436,14 +436,92 @@ the gateway stops retrying.
 
 ## Phase 6 — Customer / Player CRM
 
+**Status: COMPLETE**
+
+`customers` is tenant-owned, so two facilities can each know a player without
+sharing anything. Carries identity, address, emergency contact, skill level,
+preferred playing time, notes and consent.
+
+`bookings.customer_id` was deliberately unconstrained in Phase 4 because this
+table did not exist yet; the foreign key is added now.
+
+**Metrics** — total bookings, total spending net of refunds, last visit,
+no-shows, cancellations, favourite branch and court. A cancelled slot is not
+counted as a visit.
+
+**Segmentation** — a set, not a single value. A VIP who also plays three times
+a week is a VIP, a frequent renter *and* active, which is more useful to staff
+than forcing one label. Membership and tournament segments are deliberately
+absent; they belong to Phases 7 and 8.
+
+**Tests** — 16 tests. Tenant isolation needed an authenticated user, because
+the scope is intentionally inactive without one.
+
+---
+
+## Phase 7 — Memberships & Packages
+
+**Status: COMPLETE**
+
+`membership_plans` (monthly / quarterly / annual / custom), `membership_packages`,
+`membership_subscriptions` and `membership_credit_usages`.
+
+**Credit integrity** — credits are never decremented in place. Every spend is an
+immutable row and the balance is derived, so a lost update cannot mint credit.
+`spendCredit()` takes a row lock, so two bookings cannot both take the last
+credit, and a unique `(subscription, booking)` index means one booking can never
+consume credit twice.
+
+**Overuse prevention** — spending more than remains is refused rather than going
+negative; cancelled, paused, not-yet-started and expired memberships cannot
+spend; refunding the same spend twice cannot inflate the balance past the grant.
+Unlimited plans carry an explicit flag rather than a sentinel `0`, so
+"unlimited" is never confused with "exhausted".
+
+**Tests** — 20 tests.
+
+---
+
+## Phase 8 — Events, Open Play & Tournaments
+
+**Status: COMPLETE**
+
+`events` (7 kinds), `event_divisions`, `event_registrations`, `event_matches`.
+A bye is a real match state, because a 5-player round robin has one.
+
+**Future-proofing** — a match points at two *registrations*, and a doubles entry
+is one registration carrying a partner name. Singles, doubles and mixed doubles
+share one row shape, so a format change later is data, not a migration.
+
+**Registration** — locks the event row so two people cannot both take the last
+place. Over capacity a player is waitlisted rather than refused, and a
+withdrawal promotes the next waiting player and collects their fee.
+
+**Results** — locks the match row so a referee saving twice cannot record two
+different results. Draws, unreachable scores and already-ended matches are
+refused. Match scores are **game counts**, not points.
+
+**Tests** — 24 tests.
+
+### Bugs found in this phase
+
+1. **`confirmedRegistrations()` counted waitlisted players toward capacity**, so
+   a withdrawn place still looked full and the waitlist was never promoted. A
+   real defect in my own code, caught by the promotion test.
+2. My first reachability rule conflated game counts with points and rejected
+   legitimate 2–1 results. Corrected to: the loser can never have won as many
+   games as the winner.
+3. Three tests of mine asserted the wrong thing and were corrected rather than
+   left passing for the wrong reason — see the commit message.
+
+---
+
+## Phase 9 — POS & Product Sales
+
 **Status: NOT STARTED**
 
-### Scope (plan.md §14)
+### Scope (plan.md §17)
 
-- [ ] Customer profile: name, email, mobile, birthday, address, emergency
-      contact, skill level, preferred playing time
-- [ ] Membership, booking, purchase and event history on the profile
-- [ ] Notes and consent/preferences
-- [ ] Segmentation: new, active, inactive, member, VIP, tournament player,
-      frequent renter
-- [ ] Dashboard metrics: total bookings, total spending, last visit
+- [ ] Products: paddles, balls, grips, bags, apparel, drinks, snacks,
+      accessories, rental equipment
+- [ ] POS features, stock and purchasing
