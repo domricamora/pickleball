@@ -81,6 +81,14 @@ class Customer extends Model
     }
 
     /**
+     * @return HasMany<Notification, $this>
+     */
+    public function notifications(): HasMany
+    {
+        return $this->hasMany(Notification::class);
+    }
+
+    /**
      * @return HasMany<MembershipSubscription, $this>
      */
     public function subscriptions(): HasMany
