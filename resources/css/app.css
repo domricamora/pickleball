@@ -9,8 +9,19 @@
  * orange reserved for CTAs and important actions. Do not add accents.
  */
 @theme {
-    --font-sans: 'Plus Jakarta Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
+    --font-sans:
+        'Plus Jakarta Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
         'Segoe UI Symbol', 'Noto Color Emoji';
+
+    /*
+     * Display face.
+     *
+     * Archivo (self-hosted via Bunny Fonts) supplies the heavy, slightly
+     * condensed headlines of the marketing design. Its italic cut is what gives
+     * the site its slanted, high-energy voice. Only the weights actually used
+     * are shipped.
+     */
+    --font-display: 'Archivo', 'Plus Jakarta Sans', ui-sans-serif, system-ui, sans-serif;
 
     /* Primary */
     --color-pickle-50: #f0f9f2;
@@ -24,6 +35,30 @@
     --color-pickle-800: #225234;
     --color-pickle-900: #14532d;
     --color-pickle-950: #0a2c18;
+
+    /*
+     * Court-night surfaces.
+     *
+     * The marketing site is a dark, floodlit-court design: photography carries
+     * the page and the chrome recedes. These are near-black greens rather than
+     * neutral greys so the surfaces still read as the same brand.
+     */
+    --color-night-950: #06080a;
+    --color-night-900: #0a0e11;
+    --color-night-850: #0e1418;
+    --color-night-800: #131b20;
+    --color-night-700: #1c262c;
+    --color-night-600: #2a363e;
+    --color-night-500: #3b4a54;
+
+    /* Text and rules that sit on the dark surfaces. */
+    --color-mist-50: #f4f7f5;
+    --color-mist-100: #e7ece9;
+    --color-mist-200: #cbd4d0;
+    --color-mist-300: #9faca7;
+    --color-mist-400: #74837e;
+    --color-mist-500: #556360;
+    --color-hairline-dark: #1f2a30;
 
     /* Energetic accent (CTAs, important actions only) */
     --color-energetic-50: #fff4ef;
@@ -50,6 +85,17 @@
     /* Generous, friendly radii — plan.md §3 UI style */
     --radius-card: 1rem;
     --radius-panel: 1.5rem;
+
+    /*
+     * Pill buttons and dark panels.
+     *
+     * `rounded-pill` is the marketing site's action shape; the reference design
+     * uses full pills for every CTA. `hairline-dark` covers the dark surfaces.
+     */
+    --radius-pill: 999px;
+
+    /* Motion: one easing curve for every hover and reveal on the site. */
+    --ease-court: cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 @layer base {
@@ -60,14 +106,272 @@
         -webkit-font-smoothing: antialiased;
     }
 
-    /* Display treatment: oversized, tight tracking for sports impact. */
+    /*
+     * Display treatment.
+     *
+     * Archivo is a heavy grotesque and carries the sporty, condensed voice of
+     * the reference design. Headlines lean into its italic cut, which is what
+     * gives the marketing site its slanted, high-energy character.
+     */
     .font-display {
-        letter-spacing: -0.03em;
+        font-family: var(--font-display);
+        font-weight: 800;
+        font-style: italic;
+        letter-spacing: -0.02em;
+        line-height: 0.94;
+        text-transform: uppercase;
+    }
+
+    /* Slightly lighter, upright cut for the logo and long body headings. */
+    .font-display-plain {
+        font-family: var(--font-display);
+        font-weight: 800;
+        font-style: normal;
+        letter-spacing: -0.015em;
         line-height: 1.05;
     }
 
+    /*
+     * Section eyebrows — the small lime label that sits above every heading in
+     * the reference design. Tracking is wide because the type is tiny.
+     */
+    .eyebrow {
+        font-size: 0.6875rem;
+        font-weight: 700;
+        letter-spacing: 0.22em;
+        text-transform: uppercase;
+    }
+
     :focus-visible {
-        outline: 2px solid var(--color-pickle-500);
-        outline-offset: 2px;
+        outline: 2px solid var(--color-lime-accent);
+        outline-offset: 3px;
+    }
+
+    /* Respect a reduced-motion preference: no smooth scroll, no transitions. */
+    @media (prefers-reduced-motion: reduce) {
+        html {
+            scroll-behavior: auto;
+        }
+
+        *,
+        *::before,
+        *::after {
+            animation-duration: 0.01ms !important;
+            animation-iteration-count: 1 !important;
+            transition-duration: 0.01ms !important;
+        }
+    }
+}
+
+@layer components {
+    /*
+     * Primary action: a lime pill with an arrow, matching the reference CTAs.
+     * `--color-night-950` is the ink on lime — near-black reads as "on".
+     */
+    .btn-pill {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+        border-radius: var(--radius-pill);
+        font-weight: 700;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        transition:
+            background-color 0.25s var(--ease-court),
+            color 0.25s var(--ease-court),
+            border-color 0.25s var(--ease-court),
+            transform 0.25s var(--ease-court);
+    }
+
+    .btn-pill:hover {
+        transform: translateY(-1px);
+    }
+
+    .btn-pill:active {
+        transform: translateY(0);
+    }
+
+    .btn-pill-primary {
+        background-color: var(--color-lime-accent);
+        color: var(--color-night-950);
+    }
+
+    .btn-pill-primary:hover {
+        background-color: var(--color-lime-accent-dark);
+    }
+
+    /* Secondary: an outlined pill that stays quiet until hovered. */
+    .btn-pill-outline {
+        border: 1px solid var(--color-night-600);
+        color: var(--color-mist-100);
+    }
+
+    .btn-pill-outline:hover {
+        border-color: var(--color-mist-300);
+        color: #fff;
+    }
+
+    /*
+     * Photography treatment.
+     *
+     * Court photos are shot in daylight, so a duotone wash pulls them into the
+     * dark palette. `saturate` keeps the court blue and the lime ball readable
+     * instead of flattening everything to grey.
+     */
+    .photo-wash {
+        position: relative;
+        overflow: hidden;
+        background-color: var(--color-night-950);
+    }
+
+    .photo-wash::after {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(
+            to top,
+            rgb(6 8 10 / 0.92) 0%,
+            rgb(6 8 10 / 0.55) 38%,
+            rgb(6 8 10 / 0.2) 70%,
+            rgb(6 8 10 / 0.45) 100%
+        );
+        pointer-events: none;
+    }
+
+    .photo-wash img {
+        filter: saturate(0.85) contrast(1.05) brightness(0.82);
+        transition: transform 0.7s var(--ease-court);
+    }
+
+    .photo-wash:hover img {
+        transform: scale(1.03);
+    }
+
+    /*
+     * Cinematic photography treatment.
+     *
+     * Stock court photos are flat, evenly lit daylight shots. Laying them over
+     * four stacked layers -- a slow drift, a directional scrim, a vignette and
+     * a fine grain -- makes them read as graded footage rather than snapshots
+     * sitting on a web page, and gives overlaid type somewhere to sit.
+     *
+     * Every layer is CSS: no extra image requests, nothing to load before the
+     * effect lands, and it degrades to the plain photo if the browser ignores
+     * any of it.
+     */
+    .cinema {
+        position: relative;
+        overflow: hidden;
+        background-color: var(--color-night-950);
+        isolation: isolate;
+    }
+
+    /*
+     * The photograph is taken out of flow. Without this it is a flex sibling
+     * of the content and sits *beside* it, pushing the headline and booking
+     * panel off screen entirely.
+     */
+    .cinema > img,
+    .cinema > video {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        /* Cool shadows, warm highlights, slightly crushed blacks. */
+        filter: saturate(0.92) contrast(1.1) brightness(0.82);
+    }
+
+    /*
+     * Only the still gets the slow push. The video supplies its own motion, and
+     * animating both would run two competing Ken Burns effects at once.
+     */
+    .cinema > img {
+        transform: scale(1.08);
+        animation: cinema-drift 26s var(--ease-court) infinite alternate;
+    }
+
+    @keyframes cinema-drift {
+        from {
+            transform: scale(1.08) translate3d(0, 0, 0);
+        }
+
+        to {
+            transform: scale(1.16) translate3d(-1.5%, -1%, 0);
+        }
+    }
+
+    /*
+     * Directional scrim. The dark edge is the side the copy sits on, so the
+     * type keeps its contrast while the image stays visible on the other.
+     */
+    .cinema::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        z-index: 1;
+        background: linear-gradient(
+            105deg,
+            rgb(6 8 10 / 0.9) 0%,
+            rgb(6 8 10 / 0.68) 36%,
+            rgb(6 8 10 / 0.24) 64%,
+            rgb(6 8 10 / 0.1) 100%
+        );
+        pointer-events: none;
+    }
+
+    /* Vignette: pulls the eye to the centre and hides the crop edges. */
+    .cinema::after {
+        content: '';
+        position: absolute;
+        inset: 0;
+        z-index: 2;
+        box-shadow: inset 0 0 120px 40px rgb(4 5 7 / 0.7);
+        pointer-events: none;
+    }
+
+    /* Overlay content sits above both scrims. */
+    .cinema > *:not(img) {
+        position: relative;
+        z-index: 3;
+    }
+
+    /*
+     * Film grain. A single inline SVG noise tile, so it costs no extra request.
+     * Kept faint and non-interactive; it only breaks up banding in the dark
+     * gradients.
+     */
+    .cinema-grain::after {
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)' opacity='0.32'/%3E%3C/svg%3E");
+        background-size: 140px 140px;
+        mix-blend-mode: overlay;
+        opacity: 0.5;
+    }
+
+    /*
+     * Reduced motion: keep the grading and the scrims, drop the movement. A
+     * slow continuous zoom is exactly the kind of ambient motion this setting
+     * exists to suppress.
+     */
+    @media (prefers-reduced-motion: reduce) {
+        .cinema > img {
+            animation: none;
+            transform: scale(1.02);
+        }
+
+        /*
+         * Stop the hero video and drop it from the render path. The poster
+         * <img> underneath is the first frame of this same footage, so the
+         * hero still shows courts -- it just stops moving.
+         */
+        .cinema > video {
+            display: none;
+        }
+    }
+
+    /* Hairline divider used between dark sections. */
+    .rule-dark {
+        border-color: var(--color-hairline-dark);
     }
 }
