@@ -5,8 +5,8 @@ operating contract for working in this repository.
 
 ## Status
 
-Phases 0 to 3 are complete. See `PHASE_STATUS.md`.
-Next phase: **Phase 4 — Booking Engine**.
+Phases 0 to 4 are complete. See `PHASE_STATUS.md`.
+Next phase: **Phase 5 — Philippine Payments**.
 
 ## Stack
 

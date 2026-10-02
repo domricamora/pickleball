@@ -180,8 +180,8 @@ roadmap.
 | 1 | Marketing Site | **Complete** |
 | 2 | Authentication & SaaS Foundation | **Complete** |
 | 3 | Facility & Court Management | **Complete** |
-| 4 | Booking Engine | Next |
-| 5 | Philippine Payments & Receipts | Pending |
+| 4 | Booking Engine | **Complete** |
+| 5 | Philippine Payments & Receipts | Next |
 | 6 | Customer / Player CRM | Pending |
 | 7 | Memberships & Packages | Pending |
 | 8 | Events, Open Play & Tournaments | Pending |

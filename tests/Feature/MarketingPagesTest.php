@@ -71,12 +71,16 @@ class MarketingPagesTest extends TestCase
         $response->assertSee('name="twitter:card"', false);
     }
 
-    public function test_book_landing_page_renders(): void
+    public function test_booking_page_renders(): void
     {
         $this->get('/book')
             ->assertOk()
-            ->assertSee('Book a Court')
-            ->assertSee('Coming soon');
+            ->assertInertia(fn ($page) => $page
+                ->component('Book')
+                ->has('branches')
+                ->has('courts')
+                ->where('currencySymbol', '₱'),
+            );
     }
 
     public function test_sitemap_lists_public_urls(): void

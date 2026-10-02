@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Admin\BranchController;
 use App\Http\Controllers\Admin\CourtController;
+use App\Http\Controllers\BookingController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Site\MarketingController;
@@ -29,13 +30,13 @@ Route::get('/blog', [MarketingController::class, 'blog'])->name('blog.index');
 
 /*
 |--------------------------------------------------------------------------
-| Booking entry point
+| Booking funnel
 |--------------------------------------------------------------------------
-| The booking engine itself is Phase 4. This route renders the public
-| "Book a Court" landing page for now.
+| Availability and slot selection. Payment capture is Phase 5 (plan.md §13).
 */
 
-Route::view('/book', 'book-landing')->name('book');
+Route::get('/book', [BookingController::class, 'show'])->name('book.index');
+Route::post('/book', [BookingController::class, 'store'])->name('book.store');
 
 /*
 |--------------------------------------------------------------------------

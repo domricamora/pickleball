@@ -74,6 +74,14 @@ class Court extends Model
     }
 
     /**
+     * @return HasMany<Booking, $this>
+     */
+    public function bookings(): HasMany
+    {
+        return $this->hasMany(Booking::class);
+    }
+
+    /**
      * @return array<string, string>
      */
     protected function casts(): array

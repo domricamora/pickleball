@@ -287,16 +287,92 @@ belong to a different tenant than the branch it sits in.
 
 ## Phase 4 — Booking Engine
 
-**Status: NOT STARTED**
+**Status: COMPLETE**
 
 **Local URL:** http://localhost:8000/book
 
+### Schema
+
+- `bookings` — reference, half-open `[starts_at, ends_at)` interval, status,
+  peso amount, players, and lifecycle stamps (confirmed, checked in, completed,
+  cancelled, no show, refunded)
+- `booking_status_history` — an audit row for every transition
+
+Indexes: `(court_id, starts_at, ends_at)` for the availability query,
+`(organization_id, status, starts_at)`, `(branch_id, starts_at)`,
+`(user_id, starts_at)`.
+
+### Double-booking protection
+
+A unique index cannot express "no two intervals may intersect", so
+`App\Actions\Booking\BookCourt` does it in code:
+
+1. open a transaction,
+2. `SELECT ... FOR UPDATE` on the court row, serialising every attempt for
+   that court,
+3. re-check availability against schedules, blocks, court status and
+   occupying bookings,
+4. insert.
+
+A second concurrent request blocks on the lock, then re-reads and sees the
+first booking, so it is rejected instead of silently overwriting.
+
+### Availability
+
+`AvailabilityService` intersects the weekly schedule, court status, blocks and
+existing bookings. Intervals are half-open, so back-to-back bookings
+(18:00–19:00 and 19:00–20:00) are both allowed. Times are handled in
+Asia/Manila and stored in UTC.
+
+### Actions
+
+`BookCourt`, `ChangeBookingStatus` (confirm / check in / complete / no show /
+refund / cancel) and `RescheduleBooking`. Each locks the rows it reads and
+writes a `booking_status_history` row. Rescheduling excludes the booking from
+its own overlap check and reprices at the current rate.
+
+### Verification
+
+| Gate | Result |
+| --- | --- |
+| Tests | Pass — 107 tests, 534 assertions |
+| ESLint / TypeScript / Prettier | Pass |
+| PHPStan (L5) / Pint | Pass |
+| Production build | Pass |
+| Live `/book` page | Pass — HTTP 200, Inertia `Book` component |
+
+### Issues found and fixed
+
+1. **`Carbon::diffInMinutes()` returns a signed float in Carbon 4**, so
+   `duration_minutes` was stored as `-60` and MySQL rejected the row. Wrapped
+   in `abs()` and cast to `int`.
+2. `booking_status_history` is singular, so Eloquent inferred
+   `booking_status_histories`. Set `$table` explicitly.
+3. `CarbonInterface::parse()` is abstract and cannot be called statically.
+4. One test of mine asserted the wrong thing (it changed the price *before*
+   booking, so both sides were 500.00) — corrected so it actually proves
+   repricing.
+5. `assertInertia()->has($key, $value)` means "assert the count", not equality;
+   used `where()` for value assertions.
+
+### Notes
+
+- Payment capture is Phase 5; bookings are created confirmed and paid later.
+- True multi-process concurrency is not exercised by PHPUnit. The row-lock
+  ordering is verified by asserting that a second booking attempt for the same
+  slot never lands; real contention belongs in the Phase 17 browser tests.
+
+---
+
+## Phase 5 — Philippine Payments & Receipts
+
+**Status: NOT STARTED**
+
 ### Scope
 
-- [ ] Court availability across hours, schedules, blocks and court status
-- [ ] Time slots and calendar
-- [ ] Booking create, modify, cancel, reschedule, check-in, no-show, refund
-- [ ] Statuses: Pending, Confirmed, Checked In, Completed, Cancelled, No Show,
-      Refunded
-- [ ] **Transactions and row locking to prevent double booking** (plan.md §31)
-- [ ] Reject invalid ranges, times outside opening hours and blocked courts
+- [ ] Payment abstraction with a PayMongo driver (GCash, Maya, cards)
+- [ ] Cash, manual bank transfer and POS payment methods
+- [ ] Payment intent, transaction, status, reference and refund records
+- [ ] Webhooks with signature verification
+- [ ] Peso formatting to `₱1,250.00`
+- [ ] **Never store raw card data**
