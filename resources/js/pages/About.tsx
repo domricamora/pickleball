@@ -4,6 +4,7 @@ import BookingCta from '@/components/marketing/BookingCta';
 import Seo from '@/components/seo/Seo';
 import PageLayout, { Section } from '@/layouts/PageLayout';
 import type { SharedProps } from '@/types';
+import { assetUrl } from '@/lib/format';
 
 interface AboutProps {
     about: {
@@ -20,51 +21,52 @@ export default function About({ about }: AboutProps) {
         <PageLayout shared={shared}>
             <Seo />
 
-            <Section className="py-14">
-                <div className="grid gap-12 lg:grid-cols-2 lg:items-center">
+            <Section className="py-20 sm:py-28">
+                <div className="grid items-center gap-12 lg:grid-cols-2 lg:gap-16">
                     <div>
-                        <span className="bg-pickle-50 text-pickle-700 rounded-full px-4 py-1.5 text-xs font-bold tracking-wide uppercase">
-                            About us
-                        </span>
-                        <h1 className="font-display mt-5 text-4xl font-extrabold text-pickle-900 sm:text-5xl">
+                        <p className="eyebrow text-lime-accent">About us</p>
+                        <h1 className="font-display text-mist-50 mt-5 text-4xl sm:text-5xl lg:text-6xl">
                             {about.mission_title}
                         </h1>
-                        <p className="text-slate mt-6 text-lg">{about.mission_body}</p>
+                        <p className="text-mist-300 mt-7 text-lg leading-relaxed">{about.mission_body}</p>
                     </div>
 
-                    <div className="bg-pickle-900 rounded-panel relative overflow-hidden p-8 text-white">
-                        <div
-                            className="pointer-events-none absolute inset-0 opacity-20"
-                            style={{
-                                backgroundImage:
-                                    'linear-gradient(to right, rgba(255,255,255,.16) 1px, transparent 1px), linear-gradient(to bottom, rgba(255,255,255,.16) 1px, transparent 1px)',
-                                backgroundSize: '44px 44px',
-                            }}
-                            aria-hidden
+                    <div className="photo-wash rounded-panel">
+                        <img
+                            src={assetUrl('/media/courts-outdoor.webp')}
+                            alt="Two outdoor pickleball courts in afternoon light"
+                            width={1400}
+                            height={1000}
+                            loading="lazy"
+                            decoding="async"
+                            className="aspect-4/3 w-full object-cover"
                         />
-                        <p className="text-lime-accent relative text-sm font-bold tracking-widest uppercase">
-                            {shared.brand.tagline}
-                        </p>
-                        <p className="relative mt-4 text-3xl font-extrabold">
-                            Built for Philippine players, from beginners to league regulars.
-                        </p>
                     </div>
                 </div>
             </Section>
 
-            <Section className="pb-16">
+            <Section className="pb-20 sm:pb-28">
+                <div className="bg-night-850 border-hairline-dark rounded-panel border p-8 sm:p-12">
+                    <p className="eyebrow text-lime-accent">{shared.brand.tagline}</p>
+                    <p className="font-display-plain text-mist-50 mt-5 text-2xl leading-snug sm:text-3xl">
+                        Built for Philippine players, from beginners to league regulars.
+                    </p>
+                </div>
+            </Section>
+
+            <Section className="pb-20 sm:pb-28">
                 <SectionHeading eyebrow="What guides us" title="Four ideas behind every screen" align="center" />
-                <div className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+                <div className="mt-14 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
                     {about.values.map(([label, description]) => (
-                        <article key={label} className="border-hairline rounded-panel border bg-white p-7">
-                            <h2 className="font-display text-2xl font-extrabold text-pickle-600">{label}</h2>
-                            <p className="text-slate mt-3 text-sm">{description}</p>
+                        <article key={label} className="bg-night-850 border-hairline-dark rounded-panel border p-7">
+                            <h2 className="font-display text-lime-accent text-3xl">{label}</h2>
+                            <p className="text-mist-400 mt-3 text-sm leading-relaxed">{description}</p>
                         </article>
                     ))}
                 </div>
             </Section>
 
-            <Section className="pb-16">
+            <Section className="pb-20 sm:pb-28">
                 <BookingCta />
             </Section>
         </PageLayout>

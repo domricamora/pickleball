@@ -1,6 +1,7 @@
 import { Link } from '@inertiajs/react';
 import { Mail, Phone } from 'lucide-react';
 import type { SharedProps } from '@/types';
+import { withBasePath } from '@/lib/format';
 
 /**
  * lucide-react 1.x removed brand icons, so social marks are small inline SVGs
@@ -58,19 +59,22 @@ export default function Footer({ brand, nav, coverage, social, contact }: Footer
     const year = new Date().getFullYear();
 
     return (
-        <footer className="bg-pickle-900 mt-20 text-pickle-100">
-            <div className="mx-auto w-full max-w-7xl px-4 py-14 sm:px-6 lg:px-8">
-                <div className="grid gap-10 md:grid-cols-2 lg:grid-cols-4">
+        <footer className="bg-night-950 border-hairline-dark text-mist-300 border-t">
+            <div className="mx-auto w-full max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
+                <div className="grid gap-12 md:grid-cols-2 lg:grid-cols-4">
                     <BrandColumn brand={brand} />
 
                     <nav aria-labelledby="footer-explore">
-                        <h2 id="footer-explore" className="font-semibold text-white">
+                        <h2 id="footer-explore" className="eyebrow text-mist-50">
                             Explore
                         </h2>
-                        <ul className="mt-4 space-y-2 text-sm">
+                        <ul className="mt-5 space-y-3 text-sm">
                             {nav.map((item) => (
                                 <li key={item.href}>
-                                    <Link href={item.href} className="hover:text-lime-accent transition-colors">
+                                    <Link
+                                        href={withBasePath(item.href)}
+                                        className="hover:text-lime-accent transition-colors"
+                                    >
                                         {item.label}
                                     </Link>
                                 </li>
@@ -79,13 +83,16 @@ export default function Footer({ brand, nav, coverage, social, contact }: Footer
                     </nav>
 
                     <nav aria-labelledby="footer-resources">
-                        <h2 id="footer-resources" className="font-semibold text-white">
+                        <h2 id="footer-resources" className="eyebrow text-mist-50">
                             Resources
                         </h2>
-                        <ul className="mt-4 space-y-2 text-sm">
+                        <ul className="mt-5 space-y-3 text-sm">
                             {resourceLinks.map((item) => (
                                 <li key={item.href}>
-                                    <Link href={item.href} className="hover:text-lime-accent transition-colors">
+                                    <Link
+                                        href={withBasePath(item.href)}
+                                        className="hover:text-lime-accent transition-colors"
+                                    >
                                         {item.label}
                                     </Link>
                                 </li>
@@ -94,7 +101,7 @@ export default function Footer({ brand, nav, coverage, social, contact }: Footer
                     </nav>
 
                     <div>
-                        <h2 className="font-semibold text-white">Get in touch</h2>
+                        <h2 className="eyebrow text-mist-50">Get in touch</h2>
                         <ContactLinks contact={contact} />
                         <SocialLinks social={social} />
                     </div>
@@ -110,13 +117,13 @@ function BrandColumn({ brand }: { brand: SharedProps['brand'] }) {
     return (
         <div>
             <div className="flex items-center gap-2">
-                <span className="bg-lime-accent grid h-9 w-9 place-items-center rounded-xl text-lg font-extrabold text-pickle-900">
+                <span className="bg-lime-accent grid h-8 w-8 place-items-center rounded-pill font-display-plain text-night-950">
                     P
                 </span>
-                <span className="font-display text-xl font-extrabold text-white">{brand.name}</span>
+                <span className="font-display-plain text-mist-50 text-lg">{brand.name}</span>
             </div>
-            <p className="mt-4 text-sm text-pickle-200">{brand.description}</p>
-            <p className="text-lime-accent mt-4 text-xs font-bold tracking-widest uppercase">{brand.tagline}</p>
+            <p className="mt-5 max-w-xs text-sm leading-relaxed">{brand.description}</p>
+            <p className="eyebrow text-lime-accent mt-5">{brand.tagline}</p>
         </div>
     );
 }
@@ -135,7 +142,7 @@ function ContactLinks({ contact }: { contact: SharedProps['contact'] }) {
             </li>
             <li>
                 <a
-                    href={`tel:${contact.phone.replace(/\s/g, '')}`}
+                    href={`tel:${(contact.phone ?? '').replace(/\s/g, '')}`}
                     className="hover:text-lime-accent flex items-center gap-2 transition-colors"
                 >
                     <Phone size={16} aria-hidden />
@@ -163,7 +170,7 @@ function SocialLinks({ social }: { social: SharedProps['social'] }) {
                     target="_blank"
                     rel="noopener noreferrer"
                     aria-label={label}
-                    className="hover:bg-pickle-700 grid h-9 w-9 place-items-center rounded-card bg-pickle-800 transition-colors"
+                    className="hover:bg-night-800 grid h-9 w-9 place-items-center rounded-pill transition-colors"
                 >
                     <Icon />
                 </a>
@@ -182,23 +189,26 @@ function FooterBottom({
     year: number;
 }) {
     return (
-        <div className="border-pickle-800 mt-12 border-t pt-8">
-            <p className="text-pickle-300 text-sm">
-                <strong className="text-pickle-100 font-semibold">Now serving:</strong> {coverage.join(' · ')}
+        <div className="border-hairline-dark mt-14 border-t pt-8">
+            <p className="text-mist-400 text-sm">
+                <strong className="text-mist-200 font-semibold">Now serving:</strong> {coverage.join(' · ')}
             </p>
-            <p className="text-pickle-400 mt-4 text-xs">
-                © {year} {brand.name}. All rights reserved. Prices in Philippine pesos and include applicable taxes as
-                configured by each facility.
-            </p>
-            <ul className="text-pickle-300 mt-3 flex flex-wrap gap-5 text-xs">
-                {legalLinks.map((item) => (
-                    <li key={item.href}>
-                        <Link href={item.href} className="hover:text-lime-accent transition-colors">
-                            {item.label}
-                        </Link>
-                    </li>
-                ))}
-            </ul>
+            <div className="mt-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+                <ul className="text-mist-400 flex flex-wrap gap-5 text-xs">
+                    {legalLinks.map((item) => (
+                        <li key={item.href}>
+                            <Link href={withBasePath(item.href)} className="hover:text-lime-accent transition-colors">
+                                {item.label}
+                            </Link>
+                        </li>
+                    ))}
+                </ul>
+
+                <p className="text-mist-500 text-xs">
+                    © {year} {brand.name}. All rights reserved. Prices in Philippine pesos and include applicable taxes
+                    as configured by each facility.
+                </p>
+            </div>
         </div>
     );
 }

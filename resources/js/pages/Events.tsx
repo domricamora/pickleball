@@ -1,8 +1,7 @@
 import { usePage } from '@inertiajs/react';
-import SectionHeading from '@/components/marketing/SectionHeading';
 import BookingCta from '@/components/marketing/BookingCta';
 import Seo from '@/components/seo/Seo';
-import PageLayout, { EmptyState, Section } from '@/layouts/PageLayout';
+import PageLayout, { EmptyState, PageHero, Section } from '@/layouts/PageLayout';
 import type { SharedProps } from '@/types';
 
 interface EventsProps {
@@ -25,24 +24,26 @@ export default function Events({ events }: EventsProps) {
         <PageLayout shared={shared}>
             <Seo />
 
-            <Section className="py-14">
-                <SectionHeading
-                    eyebrow="Events"
-                    title="Find a game, a clinic or a league"
-                    description="Pickleball is better with company. Join sessions and meet players at your level."
-                />
+            <PageHero
+                eyebrow="Events"
+                title="Find a game, a clinic or a league"
+                description="Pickleball is better with company. Join sessions and meet players at your level."
+                image="/media/courts-stacking.webp"
+                alt="A racket rack beside the fence of an outdoor pickleball court"
+            />
 
-                <div className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+            <Section className="py-20 sm:py-24">
+                <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
                     {eventTypes.map((type) => (
-                        <article key={type.title} className="border-hairline rounded-card border bg-white p-6">
-                            <h2 className="text-pickle-800 font-semibold">{type.title}</h2>
-                            <p className="text-slate mt-2 text-sm">{type.description}</p>
+                        <article key={type.title} className="bg-night-850 border-hairline-dark rounded-card border p-6">
+                            <h2 className="font-display-plain text-mist-50 tracking-wide uppercase">{type.title}</h2>
+                            <p className="text-mist-400 mt-2 text-sm leading-relaxed">{type.description}</p>
                         </article>
                     ))}
                 </div>
             </Section>
 
-            <Section className="pb-16">
+            <Section className="pb-20 sm:pb-24">
                 {events.length === 0 ? (
                     <EmptyState
                         title="No events scheduled yet"
@@ -53,7 +54,10 @@ export default function Events({ events }: EventsProps) {
                 ) : (
                     <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
                         {events.map((event) => (
-                            <article key={String(event)} className="border-hairline rounded-card border bg-white p-6">
+                            <article
+                                key={String(event)}
+                                className="bg-night-850 border-hairline-dark rounded-card border p-6"
+                            >
                                 {String(event)}
                             </article>
                         ))}
@@ -61,8 +65,8 @@ export default function Events({ events }: EventsProps) {
                 )}
             </Section>
 
-            <Section className="pb-16">
-                <BookingCta />
+            <Section className="pb-20 sm:pb-24">
+                <BookingCta secondaryLabel="See tournaments" secondaryHref="/tournaments" />
             </Section>
         </PageLayout>
     );

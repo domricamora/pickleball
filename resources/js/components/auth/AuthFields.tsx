@@ -4,16 +4,24 @@ import { cx } from '@/lib/format';
 interface TextFieldProps extends InputHTMLAttributes<HTMLInputElement> {
     label: string;
     error?: string;
+    /**
+     * Renders the field for a dark surface. The auth screens keep the light
+     * treatment (plan.md §3), so this is opt-in per usage rather than global.
+     */
+    dark?: boolean;
 }
 
 /** Labelled text input with accessible error wiring. */
-export function TextField({ label, error, id, className, ...props }: TextFieldProps) {
+export function TextField({ label, error, id, className, dark = false, ...props }: TextFieldProps) {
     const inputId = id ?? props.name;
     const errorId = `${inputId}-error`;
 
     return (
         <div>
-            <label htmlFor={inputId} className="text-pickle-900 block text-sm font-medium">
+            <label
+                htmlFor={inputId}
+                className={cx('block text-sm font-medium', dark ? 'text-mist-200' : 'text-pickle-900')}
+            >
                 {label}
             </label>
             <input
@@ -22,14 +30,16 @@ export function TextField({ label, error, id, className, ...props }: TextFieldPr
                 aria-describedby={error ? errorId : undefined}
                 className={cx(
                     'mt-1.5 block w-full rounded-card border px-4 py-2.5 text-sm',
-                    'focus:border-pickle-500 focus:ring-pickle-500',
-                    error ? 'border-energetic-400' : 'border-hairline',
+                    dark
+                        ? 'bg-night-950 text-mist-50 placeholder:text-mist-500 focus:border-lime-accent focus:outline-none'
+                        : 'focus:border-pickle-500 focus:ring-pickle-500',
+                    error ? 'border-energetic-400' : dark ? 'border-hairline-dark' : 'border-hairline',
                     className,
                 )}
                 {...props}
             />
             {error && (
-                <p id={errorId} className="text-energetic-600 mt-1.5 text-sm">
+                <p id={errorId} className={cx('mt-1.5 text-sm', dark ? 'text-energetic-300' : 'text-energetic-600')}>
                     {error}
                 </p>
             )}

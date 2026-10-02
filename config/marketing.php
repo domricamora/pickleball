@@ -12,8 +12,109 @@ return [
     */
 
     'hero' => [
-        'eyebrow' => 'Philippines',
+        'eyebrow' => 'Premium pickleball facility',
     ],
+
+    /*
+     * Hero stat strip.
+     *
+     * Every value here is derived from configuration or a hard platform fact —
+     * never from invented usage numbers. plan.md §33 forbids fabricated figures
+     * on the marketing site, so there is deliberately no "players", "rating" or
+     * "members" count: those cannot be substantiated before facilities are
+     * live, and a made-up rating would be the single most damaging lie on the
+     * page.
+     */
+    'hero_stats' => [
+        ['value' => '3', 'label' => 'Steps to book'],
+        ['value' => '24/7', 'label' => 'Online booking'],
+        ['value' => 'GCash · Maya', 'label' => 'Payment options'],
+        ['value' => '₱', 'label' => 'Peso pricing'],
+    ],
+
+    /*
+     * "The courts" split section.
+     */
+    'courts_section' => [
+        'eyebrow' => 'The courts',
+        'title' => 'Play your way.',
+        'description' => 'Indoor and outdoor courts built for casual games, serious matches and everything in between. Book the court, pick the hour, and it is yours.',
+        'cta' => 'Explore courts',
+    ],
+
+    /*
+     * "Court rentals" split section.
+     */
+    'rentals_section' => [
+        'eyebrow' => 'Court rentals',
+        'title' => 'Your court. Your time.',
+        'description' => 'Book by the hour and play at your own pace. Whether you are getting together with friends or running a competitive match, you get the court and the time you need.',
+        'cta' => 'Book a court',
+    ],
+
+    /*
+     * The three "how to play" service cards.
+     */
+    'services' => [
+        [
+            'name' => 'Open play',
+            'price' => 'From ₱350 / session',
+            'description' => 'Casual games with other players at your level.',
+            'cta' => 'Book now',
+        ],
+        [
+            'name' => 'Court rental',
+            'price' => 'From ₱350 / hour',
+            'description' => 'A private court for your group, your way.',
+            'cta' => 'Book court',
+        ],
+        [
+            'name' => 'Group / event',
+            'price' => 'Custom pricing',
+            'description' => 'Parties, leagues, corporate events and tournaments.',
+            'cta' => 'Plan an event',
+        ],
+    ],
+
+    /*
+     * Equipment rentals price panel.
+     *
+     * Indicative platform rates; each facility publishes its own prices.
+     */
+    'equipment' => [
+        'title' => 'Equipment rentals',
+        'description' => 'High-quality paddles, balls and more — available to rent so you can play without the hassle.',
+        'cta' => 'View equipment',
+        'items' => [
+            ['Premium paddles', '₱80 / session'],
+            ['Standard paddles', '₱50 / session'],
+            ['Balls', '₱20 / session'],
+            ['Court equipment', '₱50 / session'],
+            ['Lockers', '₱50 / session'],
+            ['Towels', '₱20 / session'],
+            ['Demo paddles', '₱100 / session'],
+        ],
+    ],
+
+    /*
+     * Experience events band.
+     */
+    'experience_events' => [
+        'eyebrow' => 'Experience events',
+        'title' => 'More than a court.',
+        'description' => 'Meet people, play longer, stay for another game.',
+    ],
+
+    'experience_pillars' => [
+        ['Play', 'Courts designed for great games.'],
+        ['Connect', 'A community of players at every level.'],
+        ['Compete', 'Leagues, tournaments and events.'],
+    ],
+
+    /*
+     * Community section (plan.md §33). Framed as capabilities rather than
+     * member counts, because no membership totals can be claimed yet.
+     */
 
     /*
     | "Find Your Game" — the dimensions the search UI supports. Facilities are

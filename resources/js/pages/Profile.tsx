@@ -42,24 +42,24 @@ export default function Profile({ user, mustVerifyEmail, status }: ProfileProps)
         <PageLayout shared={shared}>
             <Seo title="Profile" description="Update your PicklePlay profile." noindex />
 
-            <Section className="py-10">
-                <h1 className="font-display text-3xl font-extrabold text-pickle-900 sm:text-4xl">Your profile</h1>
-                <p className="text-slate mt-2">Manage how you appear across the platform.</p>
+            <Section className="py-14">
+                <h1 className="font-display text-mist-50 text-3xl sm:text-4xl">Your profile</h1>
+                <p className="text-mist-400 mt-3">Manage how you appear across the platform.</p>
 
                 {status === 'profile-updated' && (
                     <p
                         role="status"
-                        className="border-pickle-200 bg-pickle-50 text-pickle-800 rounded-card mt-6 border px-4 py-3 text-sm"
+                        className="border-lime-accent bg-night-850 text-mist-50 rounded-card mt-8 border-l-4 px-4 py-3 text-sm"
                     >
                         Profile saved.
                     </p>
                 )}
 
                 {mustVerifyEmail && !shared.auth.user?.email_verified_at && (
-                    <div className="border-energetic-200 bg-energetic-50 text-energetic-800 rounded-card mt-6 border px-4 py-3 text-sm">
+                    <div className="border-energetic-400 bg-night-850 text-mist-50 rounded-card mt-6 border-l-4 px-4 py-3 text-sm">
                         <p className="font-semibold">Email not verified.</p>
                         <Form action="/email/verification-notification" method="post" className="mt-2">
-                            <button type="submit" className="text-energetic-800 font-semibold underline">
+                            <button type="submit" className="text-energetic-300 font-semibold underline">
                                 Resend the verification email
                             </button>
                         </Form>
@@ -75,11 +75,12 @@ type ProfileFormData = ReturnType<typeof useForm<{ name: string; email: string; 
 
 function ProfileForm({ form, onSubmit }: { form: ProfileFormData; onSubmit: (e: React.FormEvent) => void }) {
     return (
-        <Form onSubmit={onSubmit} className="border-hairline mt-8 max-w-xl rounded-panel border bg-white p-7">
+        <Form onSubmit={onSubmit} className="bg-night-850 border-hairline-dark mt-10 max-w-xl rounded-panel border p-7">
             <div className="space-y-5">
                 <TextField
                     label="Full name"
                     name="name"
+                    dark
                     autoComplete="name"
                     required
                     value={form.data.name}
@@ -90,6 +91,7 @@ function ProfileForm({ form, onSubmit }: { form: ProfileFormData; onSubmit: (e: 
                 <TextField
                     label="Email"
                     name="email"
+                    dark
                     type="email"
                     autoComplete="username"
                     required
@@ -101,6 +103,7 @@ function ProfileForm({ form, onSubmit }: { form: ProfileFormData; onSubmit: (e: 
                 <TextField
                     label="Mobile number"
                     name="phone"
+                    dark
                     type="tel"
                     autoComplete="tel"
                     placeholder="+63 917 000 0000"
@@ -110,7 +113,7 @@ function ProfileForm({ form, onSubmit }: { form: ProfileFormData; onSubmit: (e: 
                 />
 
                 <div>
-                    <label htmlFor="skill_level" className="text-pickle-900 block text-sm font-medium">
+                    <label htmlFor="skill_level" className="text-mist-200 block text-sm font-medium">
                         Playing level
                     </label>
                     <select
@@ -118,7 +121,7 @@ function ProfileForm({ form, onSubmit }: { form: ProfileFormData; onSubmit: (e: 
                         name="skill_level"
                         value={form.data.skill_level}
                         onChange={(e) => form.setData('skill_level', e.target.value)}
-                        className="border-hairline focus:border-pickle-500 focus:ring-pickle-500 mt-1.5 block w-full rounded-card border px-4 py-2.5 text-sm"
+                        className="border-hairline-dark bg-night-950 text-mist-50 focus:border-lime-accent mt-1.5 block w-full rounded-card border px-4 py-2.5 text-sm focus:outline-none"
                     >
                         {skillLevels.map((level) => (
                             <option key={level.value} value={level.value}>
@@ -127,7 +130,7 @@ function ProfileForm({ form, onSubmit }: { form: ProfileFormData; onSubmit: (e: 
                         ))}
                     </select>
                     {form.errors.skill_level && (
-                        <p className="text-energetic-600 mt-1.5 text-sm">{form.errors.skill_level}</p>
+                        <p className="text-energetic-300 mt-1.5 text-sm">{form.errors.skill_level}</p>
                     )}
                 </div>
             </div>
@@ -135,7 +138,7 @@ function ProfileForm({ form, onSubmit }: { form: ProfileFormData; onSubmit: (e: 
             <button
                 type="submit"
                 disabled={form.processing}
-                className="bg-energetic-500 hover:bg-energetic-600 mt-7 rounded-card px-6 py-2.5 font-semibold text-white transition-colors disabled:opacity-60"
+                className="btn-pill btn-pill-primary mt-8 px-6 py-2.5 text-xs"
             >
                 {form.processing ? 'Saving…' : 'Save changes'}
             </button>

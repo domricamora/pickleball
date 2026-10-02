@@ -1,8 +1,7 @@
 import { usePage } from '@inertiajs/react';
-import SectionHeading from '@/components/marketing/SectionHeading';
 import BookingCta from '@/components/marketing/BookingCta';
 import Seo from '@/components/seo/Seo';
-import PageLayout, { EmptyState, Section } from '@/layouts/PageLayout';
+import PageLayout, { EmptyState, PageHero, Section } from '@/layouts/PageLayout';
 import type { SharedProps } from '@/types';
 
 interface FacilitiesProps {
@@ -18,27 +17,27 @@ export default function Facilities({ filters, coverage, facilities }: Facilities
         <PageLayout shared={shared}>
             <Seo />
 
-            <Section className="py-14">
-                <SectionHeading
-                    eyebrow="Facilities"
-                    title="Find a court near you"
-                    description="Search by city, court type and availability to find a court that fits your next match."
-                />
-
-                <div className="mt-8 flex flex-wrap gap-3">
+            <PageHero
+                eyebrow="Facilities"
+                title="Find a court near you"
+                description="Search by city, court type and availability to find a court that fits your next match."
+                image="/media/courts-outdoor.webp"
+                alt="Outdoor pickleball courts beside a paved path"
+            >
+                <div className="flex flex-wrap gap-2">
                     {Object.entries(filters).map(([key, label]) => (
                         <button
                             key={key}
                             type="button"
-                            className="border-hairline rounded-full border bg-white px-5 py-2.5 text-sm font-medium text-slate hover:bg-pickle-50"
+                            className="border-hairline-dark text-mist-200 hover:border-lime-accent hover:text-lime-accent rounded-pill border px-5 py-2.5 text-sm font-medium transition-colors"
                         >
                             {label}
                         </button>
                     ))}
                 </div>
-            </Section>
+            </PageHero>
 
-            <Section className="pb-16">
+            <Section className="py-20 sm:py-24">
                 {facilities.length === 0 ? (
                     <EmptyState
                         title="No facilities listed yet"
@@ -51,7 +50,7 @@ export default function Facilities({ filters, coverage, facilities }: Facilities
                         {facilities.map((facility) => (
                             <article
                                 key={String(facility)}
-                                className="border-hairline rounded-card border bg-white p-6"
+                                className="bg-night-850 border-hairline-dark rounded-card border p-6"
                             >
                                 {String(facility)}
                             </article>
@@ -59,14 +58,11 @@ export default function Facilities({ filters, coverage, facilities }: Facilities
                     </div>
                 )}
 
-                <div className="mt-10">
-                    <h2 className="font-display text-xl font-bold text-pickle-900">Cities we cover</h2>
-                    <ul className="mt-4 flex flex-wrap gap-3">
+                <div className="mt-14">
+                    <h2 className="font-display text-mist-50 text-2xl sm:text-3xl">Cities we cover</h2>
+                    <ul className="mt-6 flex flex-wrap gap-3">
                         {coverage.map((city) => (
-                            <li
-                                key={city}
-                                className="bg-pickle-50 text-pickle-800 rounded-full px-5 py-2.5 text-sm font-semibold"
-                            >
+                            <li key={city} className="bg-night-850 text-mist-200 rounded-pill px-5 py-2.5 text-sm">
                                 {city}
                             </li>
                         ))}
@@ -74,7 +70,7 @@ export default function Facilities({ filters, coverage, facilities }: Facilities
                 </div>
             </Section>
 
-            <Section className="pb-16">
+            <Section className="pb-20 sm:pb-24">
                 <BookingCta />
             </Section>
         </PageLayout>

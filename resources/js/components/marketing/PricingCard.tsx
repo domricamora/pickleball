@@ -1,6 +1,7 @@
 import { Check } from 'lucide-react';
 import { ButtonLink } from '@/components/ui/Button';
 import { peso } from '@/lib/format';
+import { cx } from '@/lib/format';
 
 export interface PricingTier {
     name: string;
@@ -19,62 +20,78 @@ interface PricingCardProps {
 /**
  * Membership / pricing tier card. Prices are peso amounts formatted at
  * render time (plan.md §5, §32).
+ *
+ * The highlighted tier is the one filled with the lime accent — the same
+ * inversion the reference design uses for its "most popular" card.
  */
 export default function PricingCard({ tier }: PricingCardProps) {
+    const highlighted = Boolean(tier.highlighted);
+
     return (
         <article
-            className={`flex h-full flex-col rounded-panel p-7 ${
-                tier.highlighted ? 'bg-pickle-900 text-white shadow-lg' : 'border-hairline border bg-white'
-            }`}
+            className={cx(
+                'flex h-full flex-col rounded-panel p-7',
+                highlighted
+                    ? 'bg-lime-accent text-night-950 shadow-[0_24px_60px_-24px_rgba(183,227,74,0.45)]'
+                    : 'bg-night-850 border-hairline-dark border',
+            )}
         >
             {tier.badge && (
                 <span
-                    className={`rounded-full px-3 py-1 text-xs font-bold uppercase ${
-                        tier.highlighted ? 'bg-lime-accent text-pickle-900' : 'bg-pickle-50 text-pickle-700'
-                    }`}
+                    className={cx(
+                        'eyebrow rounded-pill px-3 py-1',
+                        highlighted ? 'bg-night-950 text-lime-accent' : 'bg-night-800 text-lime-accent',
+                    )}
                 >
                     {tier.badge}
                 </span>
             )}
 
             <h3
-                className={`font-display text-2xl font-extrabold ${tier.highlighted ? 'text-white' : 'text-pickle-900'}`}
+                className={cx(
+                    'font-display-plain mt-5 text-xl tracking-wide',
+                    highlighted ? 'text-night-950' : 'text-mist-50',
+                )}
             >
                 {tier.name}
             </h3>
 
-            <p className={`mt-2 min-h-[3rem] text-sm ${tier.highlighted ? 'text-pickle-100' : 'text-slate'}`}>
+            <p className={cx('mt-2 min-h-[3rem] text-sm', highlighted ? 'text-night-800' : 'text-mist-400')}>
                 {tier.description}
             </p>
 
             <p className="mt-5">
                 {tier.price === null ? (
                     <span
-                        className={`font-display text-3xl font-extrabold ${tier.highlighted ? 'text-white' : 'text-pickle-700'}`}
+                        className={cx('font-display-plain text-3xl', highlighted ? 'text-night-950' : 'text-mist-50')}
                     >
                         Custom
                     </span>
                 ) : (
                     <>
                         <span
-                            className={`font-display text-4xl font-extrabold ${
-                                tier.highlighted ? 'text-white' : 'text-pickle-700'
-                            }`}
+                            className={cx(
+                                'font-display-plain text-4xl',
+                                highlighted ? 'text-night-950' : 'text-mist-50',
+                            )}
                         >
                             {peso(tier.price, { decimals: false })}
                         </span>
-                        <span className={tier.highlighted ? 'text-pickle-200' : 'text-slate'}> / {tier.cadence}</span>
+                        <span className={cx('text-sm', highlighted ? 'text-night-800' : 'text-mist-400')}>
+                            {' '}
+                            / {tier.cadence}
+                        </span>
                     </>
                 )}
             </p>
 
-            <ul className={`mt-6 flex-1 space-y-3 text-sm ${tier.highlighted ? 'text-pickle-100' : 'text-slate'}`}>
+            <ul className={cx('mt-6 flex-1 space-y-3 text-sm', highlighted ? 'text-night-900' : 'text-mist-300')}>
                 {tier.features.map((feature) => (
                     <li key={feature} className="flex items-start gap-2.5">
                         <Check
                             size={17}
                             aria-hidden
-                            className={`mt-0.5 shrink-0 ${tier.highlighted ? 'text-lime-accent' : 'text-pickle-500'}`}
+                            className={cx('mt-0.5 shrink-0', highlighted ? 'text-night-950' : 'text-lime-accent')}
                         />
                         <span>{feature}</span>
                     </li>
@@ -82,8 +99,8 @@ export default function PricingCard({ tier }: PricingCardProps) {
             </ul>
 
             <div className="mt-7">
-                <ButtonLink href="/book" variant={tier.highlighted ? 'accent' : 'primary'} className="w-full">
-                    Get Started
+                <ButtonLink href="/book" variant={highlighted ? 'pill' : 'outline'} arrow className="w-full">
+                    Get started
                 </ButtonLink>
             </div>
         </article>

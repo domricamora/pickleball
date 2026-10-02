@@ -1,8 +1,7 @@
 import { usePage } from '@inertiajs/react';
-import SectionHeading from '@/components/marketing/SectionHeading';
 import BookingCta from '@/components/marketing/BookingCta';
 import Seo from '@/components/seo/Seo';
-import PageLayout, { EmptyState, Section } from '@/layouts/PageLayout';
+import PageLayout, { EmptyState, PageHero, Section } from '@/layouts/PageLayout';
 import type { SharedProps } from '@/types';
 
 interface BlogProps {
@@ -16,15 +15,15 @@ export default function Blog({ posts }: BlogProps) {
         <PageLayout shared={shared}>
             <Seo />
 
-            <Section className="py-14">
-                <SectionHeading
-                    eyebrow="Journal"
-                    title="Play better, one article at a time"
-                    description="Guides, court news and community stories from the Philippine pickleball scene."
-                />
-            </Section>
+            <PageHero
+                eyebrow="Journal"
+                title="Play better, one article at a time"
+                description="Guides, court news and community stories from the Philippine pickleball scene."
+                image="/media/courts-detail.webp"
+                alt="Three blue and green pickleball courts seen from the corner of the hall"
+            />
 
-            <Section className="pb-16">
+            <Section className="py-20 sm:py-24">
                 {posts.length === 0 ? (
                     <EmptyState
                         title="No posts published yet"
@@ -35,7 +34,10 @@ export default function Blog({ posts }: BlogProps) {
                 ) : (
                     <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
                         {posts.map((post) => (
-                            <article key={String(post)} className="border-hairline rounded-card border bg-white p-6">
+                            <article
+                                key={String(post)}
+                                className="bg-night-850 border-hairline-dark rounded-card border p-6"
+                            >
                                 {String(post)}
                             </article>
                         ))}
@@ -43,8 +45,8 @@ export default function Blog({ posts }: BlogProps) {
                 )}
             </Section>
 
-            <Section className="pb-16">
-                <BookingCta />
+            <Section className="pb-20 sm:pb-24">
+                <BookingCta secondaryLabel="See pricing" secondaryHref="/pricing" />
             </Section>
         </PageLayout>
     );

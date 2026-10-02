@@ -3,6 +3,7 @@ import '../css/app.css';
 import { createInertiaApp } from '@inertiajs/react';
 import { createRoot } from 'react-dom/client';
 import type { ComponentType } from 'react';
+import { setBasePath } from '@/lib/format';
 
 const appName = import.meta.env.VITE_APP_NAME || 'PicklePlay';
 
@@ -21,6 +22,10 @@ createInertiaApp({
         return page;
     },
     setup({ el, App, props }) {
+        // Capture the mount point before the first render so every root-relative
+        // link below the app resolves against it.
+        setBasePath((props.initialPage.props as { basePath?: string }).basePath);
+
         createRoot(el).render(<App {...props} />);
     },
     progress: {

@@ -1,8 +1,7 @@
 import { usePage } from '@inertiajs/react';
-import SectionHeading from '@/components/marketing/SectionHeading';
 import BookingCta from '@/components/marketing/BookingCta';
 import Seo from '@/components/seo/Seo';
-import PageLayout, { EmptyState, Section } from '@/layouts/PageLayout';
+import PageLayout, { EmptyState, PageHero, Section } from '@/layouts/PageLayout';
 import type { SharedProps } from '@/types';
 
 interface CourtsProps {
@@ -24,25 +23,25 @@ export default function Courts({ facilities }: CourtsProps) {
         <PageLayout shared={shared}>
             <Seo />
 
-            <Section className="py-14">
-                <SectionHeading
-                    eyebrow="Courts"
-                    title="Courts for every kind of player"
-                    description="From a first game to league night, book a court that suits how you play."
-                />
-            </Section>
+            <PageHero
+                eyebrow="Courts"
+                title="Courts for every kind of player"
+                description="From a first game to league night, book a court that suits how you play."
+                image="/media/courts-row.webp"
+                alt="A row of pickleball courts behind perimeter fencing"
+            />
 
-            <Section className="pb-16">
+            <Section className="py-20 sm:py-24">
                 <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
                     {courtTypes.map((type) => (
-                        <article key={type.title} className="border-hairline rounded-card border bg-white p-6">
-                            <h2 className="text-pickle-800 font-semibold">{type.title}</h2>
-                            <p className="text-slate mt-2 text-sm">{type.description}</p>
+                        <article key={type.title} className="bg-night-850 border-hairline-dark rounded-card border p-6">
+                            <h2 className="font-display-plain text-mist-50 tracking-wide uppercase">{type.title}</h2>
+                            <p className="text-mist-400 mt-2 text-sm leading-relaxed">{type.description}</p>
                         </article>
                     ))}
                 </div>
 
-                <div className="mt-10">
+                <div className="mt-14">
                     {facilities.length === 0 ? (
                         <EmptyState
                             title="Courts appear here once facilities go live"
@@ -55,7 +54,7 @@ export default function Courts({ facilities }: CourtsProps) {
                             {facilities.map((court) => (
                                 <article
                                     key={String(court)}
-                                    className="border-hairline rounded-card border bg-white p-6"
+                                    className="bg-night-850 border-hairline-dark rounded-card border p-6"
                                 >
                                     {String(court)}
                                 </article>
@@ -65,7 +64,7 @@ export default function Courts({ facilities }: CourtsProps) {
                 </div>
             </Section>
 
-            <Section className="pb-16">
+            <Section className="pb-20 sm:pb-24">
                 <BookingCta />
             </Section>
         </PageLayout>

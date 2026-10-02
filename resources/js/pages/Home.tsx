@@ -1,13 +1,42 @@
-import { Link, usePage } from '@inertiajs/react';
+import { usePage } from '@inertiajs/react';
+import {
+    BadgeCheck,
+    CalendarCheck,
+    CircleDot,
+    CloudSun,
+    Dumbbell,
+    Handshake,
+    Target,
+    Trophy,
+    Users,
+} from 'lucide-react';
 import Hero from '@/components/marketing/Hero';
+import StatStrip from '@/components/marketing/StatStrip';
+import SplitSection from '@/components/marketing/SplitSection';
+import ServiceCard from '@/components/marketing/ServiceCard';
+import PriceList from '@/components/marketing/PriceList';
+import FeatureTrio from '@/components/marketing/FeatureTrio';
 import SectionHeading from '@/components/marketing/SectionHeading';
 import BookingCta from '@/components/marketing/BookingCta';
+import { ButtonLink } from '@/components/ui/Button';
 import Seo from '@/components/seo/Seo';
 import PageLayout, { Section } from '@/layouts/PageLayout';
 import type { SharedProps } from '@/types';
 
 interface HomeProps {
-    findYourGame: { title: string; description: string; filters: Record<string, string> };
+    hero: { eyebrow: string };
+    heroStats: Array<{ value: string; label: string }>;
+    courtsSection: { eyebrow: string; title: string; description: string; cta: string };
+    rentalsSection: { eyebrow: string; title: string; description: string; cta: string };
+    services: Array<{ name: string; price: string; description: string; cta: string }>;
+    equipment: {
+        title: string;
+        description: string;
+        cta: string;
+        items: Array<[string, string]>;
+    };
+    experienceEvents: { eyebrow: string; title: string; description: string };
+    experiencePillars: Array<[string, string]>;
     bookingSteps: Array<{ title: string; description: string }>;
     features: Array<[string, string]>;
     operatorFeatures: Array<[string, string]>;
@@ -15,14 +44,38 @@ interface HomeProps {
     community: { title: string; description: string; items: string[] };
 }
 
-export default function Home({
-    findYourGame,
-    bookingSteps,
-    features,
-    operatorFeatures,
-    operatorCta,
-    community,
-}: HomeProps) {
+/*
+ * Icon sets, positionally matched to the config arrays. Config stays free of
+ * markup, so the mapping lives here rather than in PHP.
+ */
+const statIcons = [
+    <CalendarCheck size={22} />,
+    <CloudSun size={22} />,
+    <BadgeCheck size={22} />,
+    <CircleDot size={22} />,
+];
+
+const serviceIcons = [<Users size={24} />, <Dumbbell size={24} />, <Trophy size={24} />];
+
+const pillarIcons = [<Target size={24} />, <Handshake size={24} />, <Trophy size={24} />];
+
+export default function Home(props: HomeProps) {
+    const {
+        hero,
+        heroStats,
+        courtsSection,
+        rentalsSection,
+        services,
+        equipment,
+        experienceEvents,
+        experiencePillars,
+        bookingSteps,
+        features,
+        operatorFeatures,
+        operatorCta,
+        community,
+    } = props;
+
     const shared = usePage<SharedProps>().props;
 
     return (
@@ -31,97 +84,189 @@ export default function Home({
             <Seo />
 
             <Hero
+                eyebrow={hero.eyebrow}
                 headline={shared.brand.headline}
-                tagline={shared.brand.tagline}
                 description={shared.brand.description}
                 coverage={shared.coverage}
             />
 
-            {/* Find Your Game */}
-            <Section className="py-16 sm:py-20">
+            <StatStrip
+                stats={heroStats.map((stat, index) => ({
+                    icon: statIcons[index] ?? <CircleDot size={22} />,
+                    value: stat.value,
+                    label: stat.label,
+                }))}
+            />
+
+            {/* The courts */}
+            <Section className="py-20 sm:py-28">
+                <SplitSection
+                    image="/media/courts-detail.webp"
+                    alt="Three blue and green pickleball courts seen from the corner of the hall"
+                    width={1600}
+                    height={1100}
+                    eyebrow={courtsSection.eyebrow}
+                    title={courtsSection.title}
+                    description={courtsSection.description}
+                    ctaLabel={courtsSection.cta}
+                    ctaHref="/courts"
+                    imageLeft
+                />
+            </Section>
+
+            {/* Ways to play — the three service cards */}
+            <Section className="pb-20 sm:pb-28">
                 <SectionHeading
-                    eyebrow="Find your game"
-                    title={findYourGame.title}
-                    description={findYourGame.description}
+                    eyebrow="Ways to play"
+                    title="Three ways to get on court"
+                    description="Drop in with other players, book a court for your own group, or put on an event. Every option runs through the same booking flow."
                     align="center"
                 />
-                <div className="mt-8 flex flex-wrap justify-center gap-3">
-                    {Object.values(findYourGame.filters).map((label) => (
-                        <span
-                            key={label}
-                            className="border-hairline rounded-full border bg-white px-5 py-2.5 text-sm font-medium text-slate"
-                        >
-                            {label}
-                        </span>
+
+                <div className="mt-14 grid gap-5 lg:grid-cols-3">
+                    {services.map((service, index) => (
+                        <ServiceCard
+                            key={service.name}
+                            service={{
+                                icon: serviceIcons[index] ?? <Users size={24} />,
+                                name: service.name,
+                                price: service.price,
+                                description: service.description,
+                                ctaLabel: service.cta,
+                                ctaHref: '/book',
+                            }}
+                        />
                     ))}
-                </div>
-                <div className="mt-8 flex justify-center">
-                    <Link
-                        href="/facilities"
-                        className="border-hairline text-pickle-800 hover:bg-pickle-50 rounded-card border bg-white px-6 py-3 font-semibold transition-colors"
-                    >
-                        Browse facilities
-                    </Link>
                 </div>
             </Section>
 
-            {/* Book in Seconds */}
-            <Section className="pb-16 sm:pb-20">
-                <SectionHeading
-                    eyebrow="Book in seconds"
-                    title="Three steps and you are on court"
-                    description="No forms to fight with, no calls to make. The whole booking takes about a minute."
-                    align="center"
+            {/* Court rentals */}
+            <Section className="pb-20 sm:pb-28">
+                <SplitSection
+                    image="/media/courts-aerial.webp"
+                    alt="Eight pickleball courts laid out in two rows, seen from above"
+                    width={1600}
+                    height={900}
+                    eyebrow={rentalsSection.eyebrow}
+                    title={rentalsSection.title}
+                    description={rentalsSection.description}
+                    ctaLabel={rentalsSection.cta}
+                    ctaHref="/book"
                 />
-                <ol className="mt-10 grid gap-5 md:grid-cols-3">
-                    {bookingSteps.map((step, index) => (
-                        <li key={step.title} className="border-hairline rounded-panel border bg-white p-7">
-                            <span className="bg-pickle-500 grid h-11 w-11 place-items-center rounded-card text-lg font-extrabold text-white">
-                                {index + 1}
-                            </span>
-                            <h3 className="font-display mt-5 text-xl font-bold text-pickle-900">{step.title}</h3>
-                            <p className="text-slate mt-2 text-sm">{step.description}</p>
-                        </li>
-                    ))}
-                </ol>
             </Section>
 
-            {/* More Than Court Rental */}
-            <Section className="pb-16 sm:pb-20">
+            {/* Book in seconds */}
+            <Section className="pb-20 sm:pb-28">
+                <div className="bg-night-850 border-hairline-dark rounded-panel border p-8 sm:p-12">
+                    <SectionHeading
+                        eyebrow="Book in seconds"
+                        title="Three steps and you are on court"
+                        description="No forms to fight with, no calls to make. The whole booking takes about a minute."
+                    />
+
+                    <ol className="mt-12 grid gap-8 md:grid-cols-3">
+                        {bookingSteps.map((step, index) => (
+                            <li key={step.title}>
+                                <span className="font-display text-lime-accent text-4xl">
+                                    {String(index + 1).padStart(2, '0')}
+                                </span>
+                                <h3 className="font-display-plain text-mist-50 mt-3 text-lg tracking-wide">
+                                    {step.title}
+                                </h3>
+                                <p className="text-mist-400 mt-2 text-sm leading-relaxed">{step.description}</p>
+                            </li>
+                        ))}
+                    </ol>
+                </div>
+            </Section>
+
+            {/* Equipment rentals, with the price list panel */}
+            <Section className="pb-20 sm:pb-28">
+                <SplitSection
+                    image="/media/courts-gear.webp"
+                    alt="A rack of pickleball paddles stacked beside a court fence"
+                    width={1400}
+                    height={1000}
+                    eyebrow="Equipment rentals"
+                    title="Gear up for great games."
+                    description={equipment.description}
+                    ctaLabel={equipment.cta}
+                    ctaHref="/facilities"
+                    imageLeft
+                    aside={
+                        <PriceList
+                            title="Rental rates"
+                            items={equipment.items.map(([name, price]) => ({
+                                icon: <CircleDot size={15} />,
+                                name,
+                                price,
+                            }))}
+                        />
+                    }
+                />
+            </Section>
+
+            {/* Experience events */}
+            <Section className="pb-20 sm:pb-28">
+                <SectionHeading
+                    eyebrow={experienceEvents.eyebrow}
+                    title={experienceEvents.title}
+                    description={experienceEvents.description}
+                    align="center"
+                />
+
+                <FeatureTrio
+                    className="mt-14"
+                    pillars={experiencePillars.map(([title, description], index) => ({
+                        icon: pillarIcons[index] ?? <Target size={24} />,
+                        title,
+                        description,
+                    }))}
+                />
+
+                <div className="mt-14 flex flex-wrap justify-center gap-3">
+                    <ButtonLink href="/events" variant="pill" arrow>
+                        Browse events
+                    </ButtonLink>
+                    <ButtonLink href="/tournaments" variant="outline" arrow>
+                        See tournaments
+                    </ButtonLink>
+                </div>
+            </Section>
+
+            {/* Everything the game needs */}
+            <Section className="pb-20 sm:pb-28">
                 <SectionHeading
                     eyebrow="More than court rental"
                     title="Everything the game needs, in one place"
                     align="center"
                 />
-                <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                <div className="mt-14 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
                     {features.map(([title, description]) => (
                         <FeatureCard key={title} title={title} description={description} />
                     ))}
                 </div>
             </Section>
 
-            {/* Built for Court Owners */}
-            <Section className="pb-16 sm:pb-20">
-                <div className="bg-pickle-900 rounded-panel overflow-hidden px-6 py-14 text-white sm:px-12">
+            {/* Built for court owners */}
+            <Section className="pb-20 sm:pb-28">
+                <div className="bg-night-850 border-hairline-dark rounded-panel border p-8 sm:p-12">
                     <div className="max-w-3xl">
-                        <span className="bg-pickle-800 text-lime-accent rounded-full px-4 py-1.5 text-xs font-bold tracking-wide uppercase">
-                            Built for court owners
-                        </span>
-                        <h2 className="font-display mt-4 text-3xl font-extrabold sm:text-4xl">{operatorCta.title}</h2>
-                        <p className="mt-4 text-lg text-pickle-100">{operatorCta.description}</p>
-                        <Link
-                            href="/contact"
-                            className="bg-energetic-500 hover:bg-energetic-600 mt-6 inline-block rounded-card px-7 py-3.5 font-semibold text-white transition-colors"
-                        >
-                            {operatorCta.button}
-                        </Link>
+                        <p className="eyebrow text-lime-accent">Built for court owners</p>
+                        <h2 className="font-display text-mist-50 mt-4 text-3xl sm:text-4xl lg:text-5xl">
+                            {operatorCta.title}
+                        </h2>
+                        <p className="text-mist-300 mt-5 text-lg leading-relaxed">{operatorCta.description}</p>
+                        <ButtonLink href="/contact" variant="pill" arrow className="mt-8">
+                            Talk to us
+                        </ButtonLink>
                     </div>
 
-                    <dl className="mt-12 grid gap-x-10 gap-y-6 sm:grid-cols-2 lg:grid-cols-4">
+                    <dl className="border-hairline-dark mt-12 grid gap-x-10 gap-y-6 border-t pt-10 sm:grid-cols-2 lg:grid-cols-4">
                         {operatorFeatures.map(([label, description]) => (
                             <div key={label}>
                                 <dt className="text-lime-accent font-semibold">{label}</dt>
-                                <dd className="mt-1.5 text-sm text-pickle-100">{description}</dd>
+                                <dd className="text-mist-400 mt-1.5 text-sm">{description}</dd>
                             </div>
                         ))}
                     </dl>
@@ -129,37 +274,32 @@ export default function Home({
             </Section>
 
             {/* Community */}
-            <Section className="pb-16 sm:pb-20">
+            <Section className="pb-20 sm:pb-28">
                 <SectionHeading
                     eyebrow="Community"
                     title={community.title}
                     description={community.description}
                     align="center"
                 />
-                <ul className="mt-8 flex flex-wrap justify-center gap-3">
+                <ul className="mt-10 flex flex-wrap justify-center gap-3">
                     {community.items.map((item) => (
-                        <li
-                            key={item}
-                            className="bg-pickle-50 text-pickle-800 rounded-full px-5 py-2.5 text-sm font-semibold"
-                        >
+                        <li key={item} className="bg-night-850 text-mist-200 rounded-pill px-5 py-2.5 text-sm">
                             {item}
                         </li>
                     ))}
                 </ul>
             </Section>
 
-            <Section className="pb-16 sm:pb-20">
-                <BookingCta />
-            </Section>
+            <BookingCta />
         </PageLayout>
     );
 }
 
 function FeatureCard({ title, description }: { title: string; description: string }) {
     return (
-        <article className="border-hairline rounded-card border bg-white p-6">
-            <h3 className="text-pickle-800 font-semibold">{title}</h3>
-            <p className="text-slate mt-2 text-sm">{description}</p>
+        <article className="bg-night-850 border-hairline-dark hover:border-night-600 rounded-card border p-6 transition-colors">
+            <h3 className="font-display-plain text-mist-50 tracking-wide uppercase">{title}</h3>
+            <p className="text-mist-400 mt-2.5 text-sm leading-relaxed">{description}</p>
         </article>
     );
 }

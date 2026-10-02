@@ -1,8 +1,7 @@
 import { usePage } from '@inertiajs/react';
-import SectionHeading from '@/components/marketing/SectionHeading';
 import BookingCta from '@/components/marketing/BookingCta';
 import Seo from '@/components/seo/Seo';
-import PageLayout, { EmptyState, Section } from '@/layouts/PageLayout';
+import PageLayout, { EmptyState, PageHero, Section } from '@/layouts/PageLayout';
 import type { SharedProps } from '@/types';
 
 interface TournamentsProps {
@@ -19,18 +18,20 @@ export default function Tournaments({ tournaments }: TournamentsProps) {
         <PageLayout shared={shared}>
             <Seo />
 
-            <Section className="py-14">
-                <SectionHeading
-                    eyebrow="Tournaments"
-                    title="Compete, or cheer from the sideline"
-                    description="Leagues and tournaments with skill divisions, brackets, match schedules and published results."
-                />
+            <PageHero
+                eyebrow="Tournaments"
+                title="Compete, or cheer from the sideline"
+                description="Leagues and tournaments with skill divisions, brackets, match schedules and published results."
+                image="/media/courts-sky.webp"
+                alt="A row of outdoor pickleball courts running back under a wide sky"
+            />
 
-                <div className="mt-10 grid gap-5 sm:grid-cols-3">
+            <Section className="py-20 sm:py-24">
+                <div className="grid gap-5 sm:grid-cols-3">
                     {formats.map((format) => (
-                        <article key={format} className="border-hairline rounded-card border bg-white p-6">
-                            <h2 className="text-pickle-800 font-semibold">{format}</h2>
-                            <p className="text-slate mt-2 text-sm">
+                        <article key={format} className="bg-night-850 border-hairline-dark rounded-card border p-6">
+                            <h2 className="font-display-plain text-mist-50 tracking-wide uppercase">{format}</h2>
+                            <p className="text-mist-400 mt-2 text-sm leading-relaxed">
                                 Division play with automated brackets and standings.
                             </p>
                         </article>
@@ -38,7 +39,7 @@ export default function Tournaments({ tournaments }: TournamentsProps) {
                 </div>
             </Section>
 
-            <Section className="pb-16">
+            <Section className="pb-20 sm:pb-24">
                 {tournaments.length === 0 ? (
                     <EmptyState
                         title="No tournaments announced yet"
@@ -51,7 +52,7 @@ export default function Tournaments({ tournaments }: TournamentsProps) {
                         {tournaments.map((tournament) => (
                             <article
                                 key={String(tournament)}
-                                className="border-hairline rounded-card border bg-white p-6"
+                                className="bg-night-850 border-hairline-dark rounded-card border p-6"
                             >
                                 {String(tournament)}
                             </article>
@@ -60,8 +61,8 @@ export default function Tournaments({ tournaments }: TournamentsProps) {
                 )}
             </Section>
 
-            <Section className="pb-16">
-                <BookingCta />
+            <Section className="pb-20 sm:pb-24">
+                <BookingCta secondaryLabel="Browse events" secondaryHref="/events" />
             </Section>
         </PageLayout>
     );

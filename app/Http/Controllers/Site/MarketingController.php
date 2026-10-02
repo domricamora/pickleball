@@ -57,7 +57,14 @@ class MarketingController extends Controller
                     ],
                 ],
             ),
-            'findYourGame' => config('marketing.find_your_game'),
+            'hero' => config('marketing.hero'),
+            'heroStats' => config('marketing.hero_stats'),
+            'courtsSection' => config('marketing.courts_section'),
+            'rentalsSection' => config('marketing.rentals_section'),
+            'services' => config('marketing.services'),
+            'equipment' => config('marketing.equipment'),
+            'experienceEvents' => config('marketing.experience_events'),
+            'experiencePillars' => config('marketing.experience_pillars'),
             'bookingSteps' => config('marketing.booking_steps'),
             'features' => config('marketing.features'),
             'operatorFeatures' => config('marketing.operator_features'),
@@ -186,7 +193,10 @@ class MarketingController extends Controller
                     ],
                 ],
             ),
-            'contact' => config('marketing.contact'),
+            // Named contactPage, not contact: a page prop called "contact"
+            // would shadow the shared `contact` object that the footer reads,
+            // leaving the footer without a phone number.
+            'contactPage' => config('marketing.contact'),
             'details' => [
                 'email' => config('platform.contact.email'),
                 'phone' => config('platform.contact.phone'),

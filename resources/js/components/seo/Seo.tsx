@@ -1,4 +1,5 @@
 import { Head, usePage } from '@inertiajs/react';
+import type { SharedProps } from '@/types';
 
 interface SeoPayload {
     title: string;
@@ -14,11 +15,12 @@ interface SeoProps extends Partial<SeoPayload> {
     noindex?: boolean;
 }
 
-interface CurrentPage {
-    url: string;
-    props: { seo?: SeoPayload };
-    [key: string]: unknown;
-}
+/**
+ * Inertia v3 keeps the current URL at the top level of the page object rather
+ * than inside props, so `url` is declared here and `props` stays the shared
+ * payload, which already carries the `seo` key via its index signature.
+ */
+type CurrentPage = SharedProps;
 
 /**
  * Emits the SEO head for a page: title, description, canonical, Open Graph,
@@ -30,14 +32,16 @@ interface CurrentPage {
  * keeping the two in sync. Explicit props win over the shared payload.
  */
 export default function Seo(props: SeoProps = {}) {
-    const { url, props: pageProps } = usePage<CurrentPage>().props;
+    // Inertia v3 puts the current URL at the top level of the page object, not
+    // inside props.
+    const { url, props: pageProps } = usePage<CurrentPage>();
 
     const seo: SeoPayload = {
         title: 'PicklePlay',
         description: 'Philippine pickleball courts booking platform.',
         type: 'website',
         schema: [],
-        ...pageProps.seo,
+        ...(pageProps.seo as SeoPayload | undefined),
         ...props,
     };
 

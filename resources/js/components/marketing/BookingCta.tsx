@@ -1,5 +1,5 @@
-import { Link } from '@inertiajs/react';
-import { CalendarCheck } from 'lucide-react';
+import { ButtonLink } from '@/components/ui/Button';
+import { assetUrl } from '@/lib/format';
 
 interface BookingCtaProps {
     title?: string;
@@ -8,6 +8,12 @@ interface BookingCtaProps {
     primaryHref?: string;
     secondaryLabel?: string;
     secondaryHref?: string;
+    /**
+     * Background photograph. Defaults to the closing banner image; pass one of
+     * the other credited crops to vary it per page.
+     */
+    image?: string;
+    alt?: string;
 }
 
 /**
@@ -15,44 +21,31 @@ interface BookingCtaProps {
  * and on long-form marketing pages where the reader needs a next step.
  */
 export default function BookingCta({
-    title = 'Ready to Play?',
-    description = 'Book your court today and get on the court in minutes.',
-    primaryLabel = 'Book a Court',
+    title = 'Ready to play?',
+    description = 'Your next game is a booking away.',
+    primaryLabel = 'Book a court',
     primaryHref = '/book',
-    secondaryLabel = 'Explore Facilities',
-    secondaryHref = '/facilities',
+    secondaryLabel = 'View memberships',
+    secondaryHref = '/memberships',
+    image = '/media/courts-row.webp',
+    alt = 'Pickleball courts beside a floodlit fence at the end of the day',
 }: BookingCtaProps) {
     return (
-        <section className="bg-pickle-900 rounded-panel relative overflow-hidden px-6 py-14 text-white sm:px-12">
-            <div
-                className="pointer-events-none absolute inset-0 opacity-20"
-                style={{
-                    backgroundImage:
-                        'linear-gradient(to right, rgba(255,255,255,.16) 1px, transparent 1px), linear-gradient(to bottom, rgba(255,255,255,.16) 1px, transparent 1px)',
-                    backgroundSize: '44px 44px',
-                }}
-                aria-hidden
-            />
-            <div className="relative flex flex-col items-start gap-8 lg:flex-row lg:items-center lg:justify-between">
-                <div className="max-w-xl">
-                    <h2 className="font-display text-3xl font-extrabold sm:text-4xl">{title}</h2>
-                    <p className="mt-3 text-lg text-pickle-100">{description}</p>
-                </div>
+        <section className="cinema cinema-grain bg-night-950 relative isolate flex min-h-[24rem] items-center overflow-hidden">
+            <img src={assetUrl(image)} alt={alt} width={2000} height={1125} loading="lazy" decoding="async" />
 
-                <div className="flex w-full flex-col gap-3 sm:w-auto sm:flex-row">
-                    <Link
-                        href={primaryHref}
-                        className="bg-energetic-500 hover:bg-energetic-600 inline-flex items-center justify-center gap-2 rounded-card px-7 py-3.5 font-semibold text-white transition-colors"
-                    >
-                        <CalendarCheck size={18} aria-hidden />
+            <div className="mx-auto w-full max-w-7xl px-4 py-20 sm:px-6 sm:py-24 lg:px-8">
+                <p className="eyebrow text-lime-accent">Book in seconds</p>
+                <h2 className="font-display text-mist-50 mt-4 max-w-2xl text-4xl sm:text-5xl lg:text-6xl">{title}</h2>
+                <p className="text-mist-300 mt-5 max-w-xl text-lg leading-relaxed">{description}</p>
+
+                <div className="mt-9 flex flex-col gap-3 sm:flex-row sm:items-center">
+                    <ButtonLink href={primaryHref} variant="pill" arrow className="w-full sm:w-auto">
                         {primaryLabel}
-                    </Link>
-                    <Link
-                        href={secondaryHref}
-                        className="border-pickle-600 hover:bg-pickle-800 inline-flex items-center justify-center rounded-card border px-7 py-3.5 font-semibold text-white transition-colors"
-                    >
+                    </ButtonLink>
+                    <ButtonLink href={secondaryHref} variant="outline" arrow className="w-full sm:w-auto">
                         {secondaryLabel}
-                    </Link>
+                    </ButtonLink>
                 </div>
             </div>
         </section>

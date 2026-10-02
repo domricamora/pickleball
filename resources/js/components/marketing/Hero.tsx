@@ -1,92 +1,110 @@
-import { Link } from '@inertiajs/react';
-import { CalendarCheck, MapPin } from 'lucide-react';
+import { ButtonLink } from '@/components/ui/Button';
+import BookingWidget from '@/components/marketing/BookingWidget';
+import { MapPin } from 'lucide-react';
+import { assetUrl } from '@/lib/format';
 
 interface HeroProps {
+    eyebrow: string;
     headline: string;
-    tagline: string;
     description: string;
     coverage: string[];
 }
 
 /**
- * Homepage hero (plan.md §4). Imagery is added in Phase 1's media pass; the
- * court-line grid stands in until licensed photography is credited.
+ * Homepage hero (plan.md §4).
+ *
+ * The photograph is the hero's real content, so it carries alt text; the lime
+ * panel on the right is a working availability lookup rather than decoration.
  */
-export default function Hero({ headline, tagline, description, coverage }: HeroProps) {
+export default function Hero({ eyebrow, headline, description, coverage }: HeroProps) {
     return (
-        <section className="bg-pickle-900 text-white relative overflow-hidden">
-            <div
-                className="pointer-events-none absolute inset-0 opacity-25"
-                style={{
-                    backgroundImage:
-                        'linear-gradient(to right, rgba(255,255,255,.14) 1px, transparent 1px), linear-gradient(to bottom, rgba(255,255,255,.14) 1px, transparent 1px)',
-                    backgroundSize: '56px 56px',
-                }}
-                aria-hidden
+        <section className="cinema cinema-grain bg-night-950 relative isolate flex min-h-[38rem] items-center overflow-hidden">
+            {/*
+              The <img> is the poster and the fallback; the <video> paints over
+              it only once it is actually playing. Ordering them this way means
+              reduced-motion users, autoplay-blocked browsers and anyone still
+              on the poster all see a photograph rather than an empty hero --
+              a background <video> with no poster renders a black box.
+
+              autoPlay/muted/playsInline are all required: browsers block
+              autoplay on a video with sound or without the muted attribute.
+            */}
+            <img
+                src={assetUrl('/media/hero-poster.webp')}
+                alt="A row of outdoor pickleball courts behind black perimeter fencing"
+                width={2000}
+                height={1125}
+                fetchPriority="high"
+                decoding="async"
             />
 
-            <div className="relative mx-auto grid w-full max-w-7xl gap-12 px-4 py-20 sm:px-6 sm:py-28 lg:grid-cols-2 lg:items-center lg:px-8">
+            <video
+                className="absolute inset-0 h-full w-full object-cover"
+                autoPlay
+                muted
+                loop
+                playsInline
+                // Decorative: the poster above carries the same description.
+                aria-hidden="true"
+                tabIndex={-1}
+                poster={assetUrl('/media/hero-poster.webp')}
+            >
+                <source src={assetUrl('/media/hero-loop.mp4')} type="video/mp4" />
+            </video>
+
+            <div className="mx-auto grid w-full max-w-7xl items-center gap-12 px-4 py-20 sm:px-6 sm:py-24 lg:grid-cols-[1.15fr_0.85fr] lg:gap-16 lg:px-8 lg:py-28">
                 <div>
-                    <span className="bg-lime-accent text-pickle-900 rounded-full px-4 py-1.5 text-xs font-bold tracking-wide uppercase">
-                        Philippines
-                    </span>
+                    <p className="eyebrow text-lime-accent">{eyebrow}</p>
 
-                    <h1 className="font-display mt-6 text-4xl font-extrabold sm:text-6xl">{headline}</h1>
+                    <h1 className="font-display text-mist-50 mt-6 text-5xl sm:text-6xl lg:text-7xl xl:text-[5.25rem]">
+                        <AccentLastWord text={headline} />
+                    </h1>
 
-                    <p className="mt-6 max-w-xl text-lg text-pickle-100">{description}</p>
+                    <p className="text-mist-200 mt-7 max-w-xl text-lg leading-relaxed">{description}</p>
 
-                    <p className="text-lime-accent mt-4 font-semibold tracking-widest uppercase">{tagline}</p>
-
-                    <div className="mt-10 flex flex-col gap-3 sm:flex-row">
-                        <Link
-                            href="/book"
-                            className="bg-energetic-500 hover:bg-energetic-600 inline-flex items-center justify-center gap-2 rounded-card px-7 py-3.5 font-semibold text-white transition-colors"
-                        >
-                            <CalendarCheck size={18} aria-hidden />
-                            Book a Court
-                        </Link>
-                        <Link
-                            href="/facilities"
-                            className="border-pickle-600 hover:bg-pickle-800 inline-flex items-center justify-center rounded-card border px-7 py-3.5 font-semibold text-white transition-colors"
-                        >
-                            Explore Facilities
-                        </Link>
+                    <div className="mt-10 flex flex-col gap-3 sm:flex-row sm:items-center">
+                        <ButtonLink href="/book" variant="pill" arrow className="w-full sm:w-auto">
+                            Book a court
+                        </ButtonLink>
+                        <ButtonLink href="/facilities" variant="outline" arrow className="w-full sm:w-auto">
+                            Explore the club
+                        </ButtonLink>
                     </div>
 
                     {coverage.length > 0 && (
-                        <p className="text-pickle-300 mt-8 flex items-center gap-2 text-sm">
-                            <MapPin size={15} aria-hidden />
+                        <p className="text-mist-400 mt-9 flex items-center gap-2 text-sm">
+                            <MapPin size={15} className="text-lime-accent shrink-0" aria-hidden />
                             {coverage.join(' · ')}
                         </p>
                     )}
                 </div>
 
-                <div className="hidden lg:block">
-                    <HeroStat />
+                <div className="lg:justify-self-end">
+                    <BookingWidget />
                 </div>
             </div>
         </section>
     );
 }
 
-function HeroStat() {
-    const points = [
-        { label: 'Real-time availability', value: 'Live' },
-        { label: 'Booking steps', value: '3' },
-        { label: 'Payment options', value: 'GCash · Maya · Cash' },
-    ];
+/**
+ * Sets the final word of the headline in the lime accent.
+ *
+ * The reference design breaks its hero headline across two lines with the
+ * second line accented; splitting on the last space reproduces that rhythm
+ * while keeping the headline a single string in config.
+ */
+function AccentLastWord({ text }: { text: string }) {
+    const lastSpace = text.lastIndexOf(' ');
+
+    if (lastSpace === -1) {
+        return <span className="text-lime-accent">{text}</span>;
+    }
 
     return (
-        <div className="border-pickle-700 bg-pickle-800/60 rounded-panel border p-8 backdrop-blur">
-            <h2 className="text-lime-accent text-sm font-bold tracking-widest uppercase">Play. Book. Compete.</h2>
-            <dl className="mt-6 space-y-5">
-                {points.map((point) => (
-                    <div key={point.label}>
-                        <dt className="text-pickle-200 text-sm">{point.label}</dt>
-                        <dd className="font-display text-2xl font-extrabold text-white">{point.value}</dd>
-                    </div>
-                ))}
-            </dl>
-        </div>
+        <>
+            {text.slice(0, lastSpace + 1)}
+            <span className="text-lime-accent">{text.slice(lastSpace + 1)}</span>
+        </>
     );
 }

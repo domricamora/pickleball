@@ -2,6 +2,7 @@ import { Link, usePage } from '@inertiajs/react';
 import { useEffect, useState } from 'react';
 import { Menu, X } from 'lucide-react';
 import type { SharedProps } from '@/types';
+import { withBasePath } from '@/lib/format';
 
 interface HeaderProps {
     nav: SharedProps['nav'];
@@ -12,10 +13,19 @@ interface HeaderProps {
 /**
  * Sticky site header with a mobile drawer. The drawer closes on navigation,
  * locks background scroll while open, and dismisses on Escape.
+ *
+ * The bar is transparent over the home hero and solid everywhere else, so
+ * inner pages do not show content sliding under a see-through bar.
  */
 export default function Header({ nav, brand, auth }: HeaderProps) {
     const [open, setOpen] = useState(false);
-    const { url } = usePage<{ url: string }>().props;
+    // Inertia v3 exposes the current URL at the top level of the page object,
+    // not inside props. Reading it from props yields undefined and breaks
+    // isActive() on the first render.
+    const { url } = usePage();
+
+    // Only the home page opens with a full-bleed photograph behind the header.
+    const overHero = url === '/';
 
     useEffect(() => {
         setOpen(false);
@@ -43,25 +53,33 @@ export default function Header({ nav, brand, auth }: HeaderProps) {
 
     const isActive = (href: string) => url === href || url.startsWith(`${href}/`);
     const linkClass = (href: string) =>
-        `rounded-full px-4 py-2 text-sm font-medium transition-colors ${
-            isActive(href) ? 'bg-pickle-50 text-pickle-800' : 'text-slate hover:bg-pickle-50 hover:text-pickle-800'
+        `rounded-pill px-4 py-2 text-sm font-medium transition-colors ${
+            isActive(href) ? 'bg-night-800 text-mist-50' : 'text-mist-300 hover:bg-night-800/70 hover:text-mist-50'
         }`;
 
     return (
-        <header className="border-hairline bg-white/90 sticky top-0 z-40 border-b backdrop-blur">
-            <div className="mx-auto flex w-full max-w-7xl items-center justify-between gap-4 px-4 py-3 sm:px-6 lg:px-8">
-                <Link href="/" className="flex shrink-0 items-center gap-2" aria-label={`${brand.name} home`}>
-                    <span className="bg-pickle-500 grid h-9 w-9 place-items-center rounded-xl text-lg font-extrabold text-white">
+        <header
+            className={`sticky top-0 z-40 border-b backdrop-blur ${
+                overHero ? 'border-transparent bg-night-950/70' : 'border-hairline-dark bg-night-950/95'
+            }`}
+        >
+            <div className="mx-auto flex w-full max-w-7xl items-center justify-between gap-4 px-4 py-3.5 sm:px-6 lg:px-8">
+                <Link
+                    href={withBasePath('/')}
+                    className="flex shrink-0 items-center gap-2"
+                    aria-label={`${brand.name} home`}
+                >
+                    <span className="bg-lime-accent grid h-8 w-8 place-items-center rounded-pill font-display-plain text-night-950">
                         P
                     </span>
-                    <span className="font-display text-xl font-extrabold text-pickle-900">{brand.name}</span>
+                    <span className="font-display-plain text-mist-50 text-lg">{brand.name}</span>
                 </Link>
 
                 <nav className="hidden items-center gap-1 lg:flex" aria-label="Main">
-                    {nav.slice(0, 5).map((item) => (
+                    {nav.slice(0, 6).map((item) => (
                         <Link
                             key={item.href}
-                            href={item.href}
+                            href={withBasePath(item.href)}
                             className={linkClass(item.href)}
                             aria-current={isActive(item.href) ? 'page' : undefined}
                         >
@@ -72,23 +90,23 @@ export default function Header({ nav, brand, auth }: HeaderProps) {
 
                 <div className="flex items-center gap-2">
                     <Link
-                        href={auth.user ? '/dashboard' : '/login'}
-                        className="border-hairline text-pickle-800 hover:bg-pickle-50 hidden rounded-card border bg-white px-5 py-2.5 text-sm font-semibold sm:inline-block"
+                        href={withBasePath(auth.user ? '/dashboard' : '/login')}
+                        className="text-mist-200 hover:bg-night-800 hidden rounded-pill px-4 py-2.5 text-sm font-medium transition-colors sm:inline-block"
                     >
                         {auth.user ? 'Dashboard' : 'Log in'}
                     </Link>
 
                     <Link
-                        href="/book"
-                        className="bg-energetic-500 hover:bg-energetic-600 hidden rounded-card px-5 py-2.5 text-sm font-semibold text-white transition-colors sm:inline-block"
+                        href={withBasePath('/book')}
+                        className="btn-pill btn-pill-primary hidden px-5 py-2.5 text-xs sm:inline-flex"
                     >
-                        Book a Court
+                        Book a court
                     </Link>
 
                     <button
                         type="button"
                         onClick={() => setOpen((value) => !value)}
-                        className="border-hairline text-pickle-900 grid h-10 w-10 place-items-center rounded-card border bg-white lg:hidden"
+                        className="border-hairline-dark text-mist-50 grid h-10 w-10 place-items-center rounded-pill border lg:hidden"
                         aria-expanded={open}
                         aria-controls="mobile-menu"
                         aria-label={open ? 'Close menu' : 'Open menu'}
@@ -99,14 +117,14 @@ export default function Header({ nav, brand, auth }: HeaderProps) {
             </div>
 
             {open && (
-                <div id="mobile-menu" className="border-hairline border-t bg-white lg:hidden">
+                <div id="mobile-menu" className="border-hairline-dark border-t bg-night-950 lg:hidden">
                     <nav className="mx-auto flex w-full max-w-7xl flex-col px-4 py-4 sm:px-6" aria-label="Mobile">
                         {nav.map((item) => (
                             <Link
                                 key={item.href}
-                                href={item.href}
-                                className={`rounded-card px-4 py-3 text-base font-medium ${
-                                    isActive(item.href) ? 'bg-pickle-50 text-pickle-800' : 'text-slate'
+                                href={withBasePath(item.href)}
+                                className={`rounded-pill px-4 py-3 text-base font-medium ${
+                                    isActive(item.href) ? 'bg-night-800 text-mist-50' : 'text-mist-300'
                                 }`}
                                 aria-current={isActive(item.href) ? 'page' : undefined}
                             >
@@ -114,18 +132,15 @@ export default function Header({ nav, brand, auth }: HeaderProps) {
                             </Link>
                         ))}
 
-                        <div className="mt-3 flex flex-col gap-2 border-t border-hairline pt-4">
+                        <div className="border-hairline-dark mt-3 flex flex-col gap-2 border-t pt-4">
                             <Link
-                                href={auth.user ? '/dashboard' : '/login'}
-                                className="border-hairline text-pickle-800 rounded-card border px-4 py-3 text-center font-semibold"
+                                href={withBasePath(auth.user ? '/dashboard' : '/login')}
+                                className="border-hairline-dark text-mist-100 rounded-pill border px-4 py-3 text-center font-semibold"
                             >
                                 {auth.user ? 'Dashboard' : 'Log in'}
                             </Link>
-                            <Link
-                                href="/book"
-                                className="bg-energetic-500 rounded-card px-4 py-3 text-center font-semibold text-white"
-                            >
-                                Book a Court
+                            <Link href={withBasePath('/book')} className="btn-pill btn-pill-primary px-4 py-3">
+                                Book a court
                             </Link>
                         </div>
                     </nav>
