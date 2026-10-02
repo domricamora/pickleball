@@ -202,9 +202,17 @@ class ReportingTest extends TestCase
         $this->assertSame(7000.0, $this->reports->profit($this->windowStart(), $this->windowEnd()));
     }
 
+    /**
+     * Revenue is reported per branch id, not per name.
+     *
+     * This asserts the collision case directly: both branches are named
+     * "Main Branch", which is what the factory happens to produce when it draws
+     * the same name twice. Keyed by name the second branch overwrote the first
+     * and the figures silently merged, which is the exact bug this guards.
+     */
     public function test_revenue_by_branch_isolates_each_branch(): void
     {
-        $other = Branch::factory()->for($this->organization)->create();
+        $other = Branch::factory()->for($this->organization)->create(['name' => 'Main Branch']);
         $otherCourt = Court::factory()->for($this->organization)->for($other)->create();
 
         $this->paidBooking('1000.00');
@@ -223,10 +231,13 @@ class ReportingTest extends TestCase
             'status' => 'paid',
         ]);
 
+        // Deliberately identical names: the report must still separate them.
+        $this->branch->update(['name' => 'Main Branch']);
+
         $byBranch = $this->reports->revenueByBranch($this->windowStart(), $this->windowEnd());
 
-        $this->assertSame(3000.0, $byBranch[$other->name]);
-        $this->assertSame(1000.0, $byBranch[$this->branch->name]);
+        $this->assertSame(3000.0, $byBranch[$other->id]);
+        $this->assertSame(1000.0, $byBranch[$this->branch->id]);
     }
 
     public function test_revenue_by_payment_method(): void

@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Admin\BranchController;
 use App\Http\Controllers\Admin\CourtController;
+use App\Http\Controllers\Admin\DashboardController as OperatorDashboardController;
 use App\Http\Controllers\BookingController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\PaymentController;
@@ -102,7 +103,7 @@ Route::middleware([
     ->prefix('admin')
     ->name('admin.')
     ->group(function (): void {
-        Route::get('/', [DashboardController::class, 'index'])->name('index');
+        Route::get('/', [OperatorDashboardController::class, 'index'])->name('index');
 
         // Facilities (plan.md §11)
         Route::get('/facilities', [BranchController::class, 'index'])->name('facilities.index');

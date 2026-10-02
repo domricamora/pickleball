@@ -153,7 +153,13 @@ class ReportingService
     /**
      * Revenue per branch, largest first.
      *
-     * @return array<string, float>
+     * Keyed by branch **id**, not by name. Branch names are not unique — a
+     * tenant may legitimately run two "Main Branch" sites — so keying by name
+     * silently collapsed them into a single row and reported one branch's
+     * revenue as another's. Callers that need a label must resolve the id back
+     * to a Branch.
+     *
+     * @return array<int, float>
      */
     public function revenueByBranch(Carbon $from, Carbon $to): array
     {
@@ -161,7 +167,7 @@ class ReportingService
         $out = [];
 
         foreach ($branches as $branch) {
-            $out[$branch->name] = $this->netRevenue($from, $to, $branch->id);
+            $out[$branch->id] = $this->netRevenue($from, $to, $branch->id);
         }
 
         arsort($out);

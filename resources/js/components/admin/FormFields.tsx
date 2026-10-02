@@ -2,6 +2,8 @@
  * Small labelled form controls shared by the admin forms.
  */
 
+import { withBasePath } from '@/lib/format';
+
 interface FieldShellProps {
     id: string;
     label: string;
@@ -138,7 +140,10 @@ export function SubmitRow({ processing, submitLabel, cancelHref }: SubmitRowProp
             >
                 {processing ? 'Saving…' : submitLabel}
             </button>
-            <a href={cancelHref} className="text-slate hover:text-pickle-800 text-sm font-semibold transition-colors">
+            <a
+                href={withBasePath(cancelHref)}
+                className="text-slate hover:text-pickle-800 text-sm font-semibold transition-colors"
+            >
                 Cancel
             </a>
         </div>

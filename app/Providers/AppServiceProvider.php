@@ -2,8 +2,10 @@
 
 namespace App\Providers;
 
+use App\Models\Booking;
 use App\Models\Branch;
 use App\Models\Court;
+use App\Policies\BookingPolicy;
 use App\Policies\BranchPolicy;
 use App\Policies\CourtPolicy;
 use Illuminate\Support\Facades\Gate;
@@ -27,5 +29,6 @@ class AppServiceProvider extends ServiceProvider
         // Authorisation is always checked server-side via these policies.
         Gate::policy(Branch::class, BranchPolicy::class);
         Gate::policy(Court::class, CourtPolicy::class);
+        Gate::policy(Booking::class, BookingPolicy::class);
     }
 }

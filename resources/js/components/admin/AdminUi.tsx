@@ -1,6 +1,7 @@
 import { Link } from '@inertiajs/react';
 import AdminLayout from '@/layouts/AdminLayout';
 import Seo from '@/components/seo/Seo';
+import { withBasePath } from '@/lib/format';
 
 export interface AdminButtonProps {
     href: string;
@@ -18,7 +19,7 @@ const variants = {
 export function AdminButton({ href, children, variant = 'secondary' }: AdminButtonProps) {
     return (
         <Link
-            href={href}
+            href={withBasePath(href)}
             className={`rounded-card px-4 py-2 text-sm font-semibold transition-colors ${variants[variant]}`}
         >
             {children}

@@ -1,6 +1,7 @@
 import { Link, usePage } from '@inertiajs/react';
 import type { ReactNode } from 'react';
 import type { SharedProps } from '@/types';
+import { withBasePath } from '@/lib/format';
 
 interface AdminLayoutProps {
     children: ReactNode;
@@ -13,6 +14,7 @@ const nav = [
     { label: 'Dashboard', href: '/admin' },
     { label: 'Facilities', href: '/admin/facilities' },
     { label: 'Courts', href: '/admin/courts' },
+    { label: 'Book a court', href: '/book' },
 ];
 
 /**
@@ -20,7 +22,9 @@ const nav = [
  */
 export default function AdminLayout({ children, title, subtitle, actions }: AdminLayoutProps) {
     const shared = usePage<SharedProps>().props;
-    const { url } = usePage<{ url: string }>().props;
+    // Inertia v3 exposes the current URL at the top level of the page object,
+    // not inside props.
+    const { url } = usePage();
 
     const isActive = (href: string) => url === href || url.startsWith(`${href}/`);
     const canManage = shared.permissions.includes('facilities.manage') || shared.permissions.includes('courts.manage');
@@ -40,7 +44,7 @@ export default function AdminLayout({ children, title, subtitle, actions }: Admi
                     {nav.map((item) => (
                         <Link
                             key={item.href}
-                            href={item.href}
+                            href={withBasePath(item.href)}
                             className={`shrink-0 rounded-card px-4 py-2.5 text-sm font-medium transition-colors ${
                                 isActive(item.href)
                                     ? 'bg-pickle-700 text-white'
