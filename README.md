@@ -185,8 +185,8 @@ roadmap.
 | 6 | Customer / Player CRM | **Complete** |
 | 7 | Memberships & Packages | **Complete** |
 | 8 | Events, Open Play & Tournaments | **Complete** |
-| 9 | POS & Product Sales | Next |
-| 10 | Inventory | Pending |
+| 9 | POS & Product Sales | **Complete** |
+| 10 | Inventory | Next |
 | 11 | Staff & Operations | Pending |
 | 12 | Finance & Reporting | Pending |
 | 13 | Notifications & Marketing Automation | Pending |

@@ -5,8 +5,8 @@ operating contract for working in this repository.
 
 ## Status
 
-Phases 0 to 8 are complete. See `PHASE_STATUS.md`.
-Next phase: **Phase 9 — POS & Product Sales**.
+Phases 0 to 9 are complete. See `PHASE_STATUS.md`.
+Next phase: **Phase 10 — Inventory**.
 
 ## Stack
 

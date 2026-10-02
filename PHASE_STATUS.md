@@ -518,10 +518,47 @@ refused. Match scores are **game counts**, not points.
 
 ## Phase 9 — POS & Product Sales
 
+**Status: COMPLETE**
+
+`products` (9 categories, paddles through rental equipment), `sales`,
+`sale_items` and `stock_movements`.
+
+**Cart integrity** — the money columns are always recomputed from the line
+items, so a total can never drift from the cart it describes. Tax is applied to
+what the customer actually pays, so a discount reduces tax proportionally rather
+than being added on top.
+
+**Stock integrity** — checkout and refund both lock the product rows they touch,
+so two tills cannot both sell the last item. Movements are immutable and signed
+(a sale is negative, a restock positive), so the balance can always be rebuilt
+and audited. Products with tracking off are never decremented, which is what
+rental equipment needs.
+
+**Receipts are immutable** — line items snapshot the name, SKU and price at the
+moment of sale, so a rename or a price change can never rewrite what someone
+was charged. A test renames and reprices after checkout to prove it.
+
+**Tests** — 28 tests.
+
+### Bugs found in this phase
+
+1. **`guardOpen()` trusted the in-memory model**, so a caller holding a sale
+   loaded before checkout could still edit a paid receipt. It now re-reads the
+   status from the database.
+2. `ProductFactory` omitted `tax_rate`, which became `NULL` in PHP and bypassed
+   the column default, so every sale line failed to insert.
+3. `SaleItem` was unimported in `SaleService` and resolved to the wrong
+   namespace.
+4. Two tests of mine called factory *state* methods on an array-based helper,
+   which cannot work; rewritten as explicit attributes.
+
+---
+
+## Phase 10 — Inventory
+
 **Status: NOT STARTED**
 
-### Scope (plan.md §17)
+### Scope (plan.md §18)
 
-- [ ] Products: paddles, balls, grips, bags, apparel, drinks, snacks,
-      accessories, rental equipment
-- [ ] POS features, stock and purchasing
+- [ ] Categories, SKU, barcode, supplier, cost and selling price
+- [ ] Stock levels, reorder points and purchasing
