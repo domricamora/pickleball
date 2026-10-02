@@ -1,0 +1,49 @@
+*.log
+.DS_Store
+Thumbs.db
+
+# --- Secrets and environment (plan.md §2) --------------------------------
+# Credentials must only exist in local .env, server .env and deployment
+# secrets. They must never reach Git.
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.crt
+auth.json
+/database/*.sqlite
+/database/*.sqlite-journal
+
+# --- PHP -------------------------------------------------------------------
+/vendor
+.phpactor.json
+.phpunit.result.cache
+/.phpunit.cache
+/storage/*.key
+Homestead.json
+Homestead.yaml
+_ide_helper.php
+
+# --- Node ------------------------------------------------------------------
+/node_modules
+/public/build
+/public/hot
+/public/fonts-manifest.dev.json
+
+# --- Laravel runtime -------------------------------------------------------
+/public/storage
+/storage/*.key
+/storage/pail
+
+# --- Editors ---------------------------------------------------------------
+/.codex
+/.cursor/
+/.idea
+/.nova
+/.vscode
+/.zed
+
+# Local dev server logs
+/storage/serve.*
+/storage/*.log

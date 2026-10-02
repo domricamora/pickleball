@@ -1,0 +1,73 @@
+@import 'tailwindcss';
+
+@source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
+@source '../../storage/framework/views/*.php';
+
+/*
+ * Brand tokens — plan.md §3 "Brand / Visual Direction".
+ * Green is the core brand colour, lime for energetic highlights,
+ * orange reserved for CTAs and important actions. Do not add accents.
+ */
+@theme {
+    --font-sans: 'Plus Jakarta Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
+        'Segoe UI Symbol', 'Noto Color Emoji';
+
+    /* Primary */
+    --color-pickle-50: #f0f9f2;
+    --color-pickle-100: #dbf0e2;
+    --color-pickle-200: #b9e0c7;
+    --color-pickle-300: #8bc9a1;
+    --color-pickle-400: #58ac78;
+    --color-pickle-500: #3a9d5d;
+    --color-pickle-600: #2f7f4b;
+    --color-pickle-700: #27663e;
+    --color-pickle-800: #225234;
+    --color-pickle-900: #14532d;
+    --color-pickle-950: #0a2c18;
+
+    /* Energetic accent (CTAs, important actions only) */
+    --color-energetic-50: #fff4ef;
+    --color-energetic-100: #ffe6d8;
+    --color-energetic-200: #ffc8ad;
+    --color-energetic-300: #ffa179;
+    --color-energetic-400: #ff7f47;
+    --color-energetic-500: #ff6b35;
+    --color-energetic-600: #f04a17;
+    --color-energetic-700: #c93312;
+    --color-energetic-800: #9d2a15;
+    --color-energetic-900: #7e2615;
+
+    /* Court lime highlight */
+    --color-lime-accent: #b7e34a;
+    --color-lime-accent-dark: #94c22c;
+
+    /* Neutrals */
+    --color-ink: #10231a;
+    --color-slate: #475569;
+    --color-soft-bg: #f7faf5;
+    --color-hairline: #dde7df;
+
+    /* Generous, friendly radii — plan.md §3 UI style */
+    --radius-card: 1rem;
+    --radius-panel: 1.5rem;
+}
+
+@layer base {
+    body {
+        background-color: var(--color-soft-bg);
+        color: var(--color-ink);
+        font-family: var(--font-sans);
+        -webkit-font-smoothing: antialiased;
+    }
+
+    /* Display treatment: oversized, tight tracking for sports impact. */
+    .font-display {
+        letter-spacing: -0.03em;
+        line-height: 1.05;
+    }
+
+    :focus-visible {
+        outline: 2px solid var(--color-pickle-500);
+        outline-offset: 2px;
+    }
+}
