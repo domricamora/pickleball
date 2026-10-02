@@ -186,9 +186,9 @@ roadmap.
 | 7 | Memberships & Packages | **Complete** |
 | 8 | Events, Open Play & Tournaments | **Complete** |
 | 9 | POS & Product Sales | **Complete** |
-| 10 | Inventory | Next |
-| 11 | Staff & Operations | Pending |
-| 12 | Finance & Reporting | Pending |
+| 10 | Inventory | **Complete** |
+| 11 | Staff & Operations | **Complete** |
+| 12 | Finance & Reporting | Next |
 | 13 | Notifications & Marketing Automation | Pending |
 | 14 | AI Features | Pending |
 | 15 | Analytics | Pending |

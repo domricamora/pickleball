@@ -562,3 +562,76 @@ was charged. A test renames and reprices after checkout to prove it.
 
 - [ ] Categories, SKU, barcode, supplier, cost and selling price
 - [ ] Stock levels, reorder points and purchasing
+---
+
+## Phase 10 — Inventory
+
+**Status: COMPLETE**
+
+Suppliers, product cost, purchase orders with lines, and stock transfers, on
+top of the Phase 9 `stock_movements` ledger.
+
+**Auditable movements** — every stock change locks the product row and writes an
+immutable, signed movement, so the balance can always be rebuilt from the
+ledger. A test receives ten units, writes off three as damage, and asserts the
+movement sum equals the stored balance.
+
+**Purchase orders** — lines snapshot name and cost, so a later price change
+cannot rewrite what was agreed. Receiving rolls the order up to partial or fully
+received automatically; receiving more than ordered is refused.
+
+**Transfers** — stock leaves when sent and returns when received, so anything
+lost in transit shows in the ledger. A transfer cannot be received twice.
+
+`StockTransferStatus` is a separate enum from `PurchaseOrderStatus` on purpose:
+a transfer has no drafts or partial receipts, and a shared enum would invite
+impossible states.
+
+**Tests** — 21 tests.
+
+---
+
+## Phase 11 — Staff & Operations
+
+**Status: COMPLETE**
+
+`staff`, `staff_attendances`, `staff_leave_requests`, `operations_checklists`,
+`incident_reports`, `staff_tasks`.
+
+**Attendance is a punch pair, not an hour total** — time in and time out are
+stored separately so a missing or corrected punch stays visible instead of being
+absorbed into a total. An open shift contributes *no* hours rather than
+silently counting as zero, and a test proves it.
+
+**Integrity** — one shift per person per day (unique index plus a row lock in
+`punchIn`); a shift cannot end before it starts or be closed twice; a leave
+request can only be decided once, under a row lock, so two managers reviewing
+at the same moment cannot both decide it.
+
+**Checklists** — opening and closing share one table because the shape is
+identical; a separate `is_complete` flag would only duplicate `completed_at`.
+
+**Tests** — 20 tests.
+
+### Bugs found in this phase
+
+1. **`IncidentReport::isOpen()` returned false on a freshly created model**,
+   because a new instance has `null` for `status`, not the database default.
+   Found by inspecting the runtime value rather than reasoning about the enum.
+2. A test of mine asserted a random factory-generated role; the fixture pins it
+   now.
+3. Carbon 4 returns a float from `diffInDays`, so `days()` needed an int cast.
+
+---
+
+## Phase 12 — Finance & Reporting
+
+**Status: NOT STARTED**
+
+### Scope (plan.md §20)
+
+- [ ] Daily sales, court, product, membership and event revenue
+- [ ] Expenses, refunds, payment methods, outstanding amounts
+- [ ] Revenue by branch, court, and day/time
+- [ ] Dashboard KPIs: revenue, bookings, occupancy, average booking value,
+      active members, new and repeat customers, product sales
