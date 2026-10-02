@@ -81,6 +81,14 @@ class Customer extends Model
     }
 
     /**
+     * @return HasMany<MembershipSubscription, $this>
+     */
+    public function subscriptions(): HasMany
+    {
+        return $this->hasMany(MembershipSubscription::class);
+    }
+
+    /**
      * @param  Builder<Customer>  $query
      * @return Builder<Customer>
      */
