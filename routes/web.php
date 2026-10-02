@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Site\MarketingController;
 use App\Http\Controllers\Site\SeoController;
 use Illuminate\Support\Facades\Route;
@@ -32,6 +34,31 @@ Route::get('/blog', [MarketingController::class, 'blog'])->name('blog.index');
 */
 
 Route::view('/book', 'book-landing')->name('book');
+
+/*
+|--------------------------------------------------------------------------
+| Application (authenticated)
+|--------------------------------------------------------------------------
+*/
+
+Route::middleware([
+    config('fortify.auth_middleware'),
+    'active',
+    'verified',
+])->group(function (): void {
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::put('/profile', [ProfileController::class, 'update'])->name('profile.update');
+});
+
+/*
+|--------------------------------------------------------------------------
+| Authentication
+|--------------------------------------------------------------------------
+| Fortify registers its own routes (login, register, password reset, email
+| verification, two-factor) from its service provider. Its Blade views are
+| pointed at Inertia pages in App\Providers\FortifyServiceProvider.
+*/
 
 /*
 |--------------------------------------------------------------------------

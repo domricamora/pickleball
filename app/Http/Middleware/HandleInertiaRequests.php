@@ -4,6 +4,7 @@ namespace App\Http\Middleware;
 
 use Illuminate\Http\Request;
 use Inertia\Middleware;
+use Spatie\Permission\Models\Permission;
 
 class HandleInertiaRequests extends Middleware
 {
@@ -61,8 +62,36 @@ class HandleInertiaRequests extends Middleware
             ],
 
             'auth' => [
-                'user' => fn () => $request->user()?->only(['id', 'name', 'email']),
+                'user' => fn () => $request->user()?->only([
+                    'id',
+                    'name',
+                    'email',
+                    'phone',
+                    'email_verified_at',
+                    'is_active',
+                ]),
+                'role' => fn () => $request->user()?->getRoleNames()->first(),
+                'permissions' => fn () => $request->user()?->getAllPermissions()->pluck('name')->values(),
+                'isPlatformStaff' => fn () => (bool) $request->user()?->isPlatformStaff(),
+                'organizationId' => fn () => $request->user()?->organization_id,
+                'branchId' => fn () => $request->user()?->branch_id,
             ],
+
+            'permissions' => function () use ($request): array {
+                if (! $request->user()) {
+                    return [];
+                }
+
+                $user = $request->user();
+
+                // Super Admin holds every permission name so the front end can
+                // hide nothing on their behalf by accident.
+                if ($user->isPlatformStaff()) {
+                    return Permission::query()->pluck('name')->all();
+                }
+
+                return $user->getAllPermissions()->pluck('name')->values()->all();
+            },
         ];
     }
 }

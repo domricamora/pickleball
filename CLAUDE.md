@@ -5,8 +5,8 @@ operating contract for working in this repository.
 
 ## Status
 
-Phases 0 and 1 are complete. See `PHASE_STATUS.md`.
-Next phase: **Phase 2 — Authentication & SaaS Foundation**.
+Phases 0, 1 and 2 are complete. See `PHASE_STATUS.md`.
+Next phase: **Phase 3 — Facility & Court Management**.
 
 ## Stack
 
@@ -26,9 +26,13 @@ php artisan serve                 # http://localhost:8000
 npm run dev                       # Vite dev server (run alongside)
 npm run build                     # production assets
 
+# Create the first administrator (credentials come from .env or --options)
+php artisan db:seed --class=RolePermissionSeeder
+php artisan app:install-admin
+
 # Quality gates — all must pass before a phase is called complete
 php artisan test
-vendor/bin/phpstan analyse
+vendor/bin/phpstan analyse --memory-limit=1G
 vendor/bin/pint --test
 npm run lint
 npm run types:check
@@ -71,7 +75,14 @@ The workspace folder is `C:\wamp64\www\p`, served as `/p` by WAMP.
 - **Use database transactions and row locking for bookings, payments and
   stock.** Booking integrity outranks convenience (plan.md §31).
 - Validate all input. Keep tenant isolation explicit — every tenant-owned model
-  carries `organization_id`.
+  carries `organization_id` **and** `use BelongsToOrganization`.
+- **The tenant global scope is the security boundary.** Never bypass it with a
+  hand-written `where`. If a query genuinely must cross tenants, say so out
+  loud with `withoutGlobalScope('organization')` and guard it with
+  `bypassesTenantScope()`.
+- **A signed-in user with no `organization_id` (a player) must see zero tenant
+  rows.** The scope forces an unsatisfiable condition rather than skipping, so
+  "no tenant" can never mean "all tenants".
 - Use migrations for schema changes; never hand-edit the database.
 - Write tests with new functionality. Unit tests for business logic, feature
   tests for endpoints.

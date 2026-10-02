@@ -38,11 +38,28 @@ export interface SharedProps {
             id: number;
             name: string;
             email: string;
+            phone: string | null;
+            email_verified_at: string | null;
+            is_active: boolean;
         } | null;
+        role: string | null;
+        permissions: string[];
+        isPlatformStaff: boolean;
+        organizationId: number | null;
+        branchId: number | null;
     };
+    /**
+     * Every permission name in the system, granted in full to platform staff.
+     */
+    permissions: string[];
     /**
      * Inertia's PageProps constraint requires an index signature for any extra
      * props a page may receive alongside the shared ones.
      */
     [key: string]: unknown;
+}
+
+/** True when the signed-in user holds the given permission. */
+export function can(shared: SharedProps, permission: string): boolean {
+    return shared.permissions.includes(permission);
 }

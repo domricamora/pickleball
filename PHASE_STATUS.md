@@ -127,20 +127,113 @@ Source of truth: [`plan.md`](plan.md).
 
 ## Phase 2 — Authentication & SaaS Foundation
 
-**Status: NOT STARTED**
+**Status: COMPLETE**
 
 **Local URL:** http://localhost:8000/login
 
+### Authentication
+
+Fortify 1.40 backs every flow; its Blade views are pointed at Inertia pages in
+`App\Providers\FortifyServiceProvider`.
+
+| Route | Page |
+| --- | --- |
+| `/login` | `auth/Login` |
+| `/register` | `auth/Register` |
+| `/forgot-password` | `auth/ForgotPassword` |
+| `/reset-password/{token}` | `auth/ResetPassword` |
+| `/verify-email` | `auth/VerifyEmail` |
+| `/user/confirm-password` | `auth/ConfirmPassword` |
+| `/two-factor-challenge` | `auth/TwoFactorChallenge` |
+| `/dashboard` | `Dashboard` |
+| `/profile` | `Profile` |
+
+Registration, login, logout, password reset, email verification, profile
+update, 2FA and passkeys are all enabled.
+
+### Tenancy
+
+- `organizations` — tenants, with Philippine business details, timezone,
+  currency and **administrative** tax configuration
+- `branches` — physical locations, with PH address fields and GPS coordinates
+- `users` gained `organization_id`, `branch_id`, `phone`, `skill_level`,
+  `is_active`
+- `organization_users` — multi-tenant membership with a role per tenant
+- `BelongsToOrganization` trait applies an automatic global scope
+
+### RBAC
+
+`App\Enums\Role` is the single source of truth for the eight roles in plan.md §7
+and the permissions each one holds. `RolePermissionSeeder` materialises them and
+is idempotent. `spatie/laravel-permission` backs `hasRole` / `hasPermission`;
+Super Admin holds every permission implicitly.
+
+### Installer
+
+```bash
+php artisan app:install-admin --email=... --password=... --organization="..."
+```
+
+Reads `ADMIN_EMAIL` / `ADMIN_PASSWORD` / `ADMIN_NAME` / `ADMIN_ORGANIZATION`
+from the environment, validates a strong password (12+ chars, mixed case,
+digits), optionally creates a first tenant and branch, and **never** hard-codes
+or echoes a credential.
+
+### Verification
+
+| Gate | Result |
+| --- | --- |
+| Tests | Pass — 59 tests, 354 assertions |
+| ESLint / TypeScript / Prettier | Pass |
+| PHPStan (L5) / Pint | Pass |
+| Production build | Pass |
+| Live login → dashboard | Pass — POST 302, `/dashboard` 200 |
+
+### Issues found and fixed during this phase
+
+1. **Tenant isolation was silently disabled.** `BelongsToOrganization` skipped
+   its scope whenever `runningInConsole()` was true. That is also true inside
+   **queue workers**, so a job for one tenant could read another's rows. The
+   scope is now keyed on the authenticated user alone.
+2. **A player account could read every tenant's data.** With
+   `organization_id === null` the scope previously applied no condition at all,
+   meaning "no tenant" meant "all tenants". The scope now forces an
+   unsatisfiable condition.
+3. **`$request->string('token')` returned empty** for the password reset page —
+   `input()` reads query and body, but the token is a *route* parameter. Fixed
+   with `$request->route('token')`.
+4. **`skill_level` was not mass-assignable**, so profile updates silently
+   dropped it. `organization_id` / `branch_id` are deliberately still excluded.
+5. Fortify has no notion of a suspended account, so `is_active` was never
+   enforced. Added `Fortify::authenticateUsing()` plus the `active` middleware
+   that ends the session of a user suspended after signing in.
+6. `auth:sanctum` was applied without Sanctum installed, 500-ing every
+   protected route. Fortify's session guard is used instead.
+
+### Notes
+
+- `assertGuest()` takes a guard name, so `$this->assertGuest('message')` throws.
+- Fortify's login limiter returns **429**, not a validation error, once locked
+  out — asserted explicitly.
+- PHPStan needs `--memory-limit=1G` now that tenancy scopes are analysed.
+
+---
+
+## Phase 3 — Facility & Court Management
+
+**Status: NOT STARTED**
+
+**Local URL:** http://localhost:8000/admin/facilities
+
 ### Scope
 
-- [ ] Registration, login, logout, password reset, email verification, profile
-- [ ] Role permissions (Super Admin, Facility Owner, Manager, Front Desk,
-      Cashier, Staff, Coach, Customer)
-- [ ] Organization/tenant model with global scope
-- [ ] Branch model
-- [ ] Admin dashboard
-- [ ] Initial admin created through a controlled installer or seeder driven by
-      environment variables — never hard-coded (plan.md §10, §2)
+- [ ] Facility CRUD: name, address (barangay, city, province, region), contact,
+      operating hours, photos, description, GPS coordinates
+- [ ] Courts: name, number, type, indoor/outdoor, surface, status, capacity,
+      amenities, pricing
+- [ ] Schedules: operating hours, blocked periods, maintenance, holidays
+- [ ] Pricing: weekday, weekend, peak, off-peak, holiday, member, guest
+- [ ] Tenant-scoped authorisation on every admin route
 
 ---
 
@@ -148,8 +241,8 @@ Source of truth: [`plan.md`](plan.md).
 
 | Phase | Scope | Status |
 | --- | --- | --- |
-| 2 | Authentication & SaaS Foundation | Pending |
-| 3 | Facility & Court Management | Pending |
+| 2 | Authentication & SaaS Foundation | **Complete** |
+| 3 | Facility & Court Management | Next |
 | 4 | Booking Engine | Pending |
 | 5 | Philippine Payments & Receipts | Pending |
 | 6 | Customer / Player CRM | Pending |

@@ -24,6 +24,21 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Initial administrator
+    |--------------------------------------------------------------------------
+    | Read by `php artisan app:install-admin`. These values live only in the
+    | local and server .env files and must never be committed (plan.md §2).
+    */
+
+    'admin' => [
+        'email' => env('ADMIN_EMAIL'),
+        'password' => env('ADMIN_PASSWORD'),
+        'name' => env('ADMIN_NAME'),
+        'organization' => env('ADMIN_ORGANIZATION'),
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
     | Locale
     |--------------------------------------------------------------------------
     | Philippine defaults: peso, Asia/Manila, PH mobile numbers.

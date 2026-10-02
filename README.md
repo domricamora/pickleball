@@ -178,8 +178,8 @@ roadmap.
 | --- | --- | --- |
 | 0 | Project Foundation | **Complete** |
 | 1 | Marketing Site | **Complete** |
-| 2 | Authentication & SaaS Foundation | Next |
-| 3 | Facility & Court Management | Pending |
+| 2 | Authentication & SaaS Foundation | **Complete** |
+| 3 | Facility & Court Management | Next |
 | 4 | Booking Engine | Pending |
 | 5 | Philippine Payments & Receipts | Pending |
 | 6 | Customer / Player CRM | Pending |
