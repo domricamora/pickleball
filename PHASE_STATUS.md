@@ -62,20 +62,85 @@ Source of truth: [`plan.md`](plan.md).
 
 ## Phase 1 — Marketing Site
 
-**Status: NOT STARTED**
+**Status: COMPLETE**
 
 **Local URL:** http://localhost:8000
 
+### Pages
+
+| Route | Page | Notes |
+| --- | --- | --- |
+| `/` | Home | Hero, Find Your Game, Book in Seconds, features, operator section, community, CTA |
+| `/facilities` | Facilities | Filters + honest empty state until Phase 3 |
+| `/courts` | Courts | Court-type overview + empty state |
+| `/pricing` | Pricing | Three peso-priced tiers |
+| `/memberships` | Memberships | Tiers, benefits, session packages |
+| `/events` | Events | Event categories + empty state |
+| `/tournaments` | Tournaments | Singles/Doubles/Mixed doubles + empty state |
+| `/about` | About | Mission and brand values |
+| `/contact` | Contact | Contact cards + LocalBusiness schema |
+| `/faq` | FAQ | Accessible accordion + FAQPage schema |
+| `/blog` | Blog | Empty state |
+| `/book` | Book a Court | Landing page; the engine itself is Phase 4 |
+| `/sitemap.xml` | Sitemap | Generated from a static route list |
+| `/robots.txt` | Robots | Disallows `/admin`, `/dashboard`, `/profile` |
+
+### Components
+
+`Header` (sticky + mobile drawer with Escape and scroll-lock),
+`Footer`, `Hero`, `SectionHeading`, `BookingCta`, `PricingCard`, `Faq`,
+`Button`/`ButtonLink`, `Seo`, `PageLayout`, `EmptyState`.
+
+### SEO
+
+- Title, description, canonical, Open Graph and Twitter cards are rendered
+  **server-side** in `app.blade.php` from the controller's `seo` prop, so
+  crawlers and social scrapers see them without running JavaScript.
+- The React `<Seo />` component re-states the same values after hydration;
+  explicit props override the shared payload.
+- JSON-LD: `Organization` + `WebSite` (home), `LocalBusiness` (contact),
+  `FAQPage` (FAQ).
+- `sitemap.xml` and `robots.txt` served by `SeoController`.
+- No location landing pages for invented facilities (plan.md §33).
+
+### Verification
+
+| Gate | Result |
+| --- | --- |
+| 15 routes return HTTP 200 | Pass |
+| Tests | Pass — 34 tests, 231 assertions |
+| ESLint / TypeScript / Prettier | Pass |
+| PHPStan (L5) / Pint | Pass |
+| Production build | Pass |
+
+### Notes
+
+- lucide-react 1.x removed brand icons, so Facebook/Instagram marks in the
+  footer are small inline SVGs.
+- PHPUnit 12 needs `#[DataProvider]` attributes, not `@dataProvider`.
+- List pages intentionally render empty states — real facilities arrive in
+  Phase 3 and must not be faked for SEO.
+- Photography is still the CSS court-line treatment; the licensed media pass
+  with `resources/media/media-credits.md` entries is still outstanding.
+
+---
+
+## Phase 2 — Authentication & SaaS Foundation
+
+**Status: NOT STARTED**
+
+**Local URL:** http://localhost:8000/login
+
 ### Scope
 
-- [ ] Home, Courts, Facilities, Pricing, Memberships, Events, Tournaments,
-      About, Contact, FAQ, Blog, Login, Register, Book a Court
-- [ ] Components: Header, Footer, Hero, CourtCard, FacilityCard, PricingCard,
-      BookingCTA, Testimonials, FAQ, EventCard, MobileNav
-- [ ] SEO: metadata, Open Graph, Twitter cards, Schema.org, LocalBusiness,
-      SportsActivityLocation, sitemap, robots, canonicals
-- [ ] Performance: lazy loading, WebP/AVIF, responsive images, code splitting
-- [ ] Royalty-free media with credits in `resources/media/media-credits.md`
+- [ ] Registration, login, logout, password reset, email verification, profile
+- [ ] Role permissions (Super Admin, Facility Owner, Manager, Front Desk,
+      Cashier, Staff, Coach, Customer)
+- [ ] Organization/tenant model with global scope
+- [ ] Branch model
+- [ ] Admin dashboard
+- [ ] Initial admin created through a controlled installer or seeder driven by
+      environment variables — never hard-coded (plan.md §10, §2)
 
 ---
 

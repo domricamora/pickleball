@@ -95,9 +95,12 @@ resources/
   css/app.css       Tailwind entry + brand design tokens
   js/
     app.tsx         Inertia/React entry point
-    layouts/        Shared page shells
-    pages/          One file per route (Welcome.tsx, ...)
-    components/     Reusable React components
+    layouts/        PageLayout — public shell with header and footer
+    pages/          One file per route (Home.tsx, Pricing.tsx, ...)
+    components/     Reusable React components (layout, marketing, seo, ui)
+    lib/            Formatters and helpers (peso, dates, class names)
+    types/          Shared Inertia prop types
+  views/            Blade root view and SSR head tags
     lib/            Helpers and shared utilities
 routes/
   web.php           Public and app routes
@@ -174,8 +177,8 @@ roadmap.
 | Phase | Scope | Status |
 | --- | --- | --- |
 | 0 | Project Foundation | **Complete** |
-| 1 | Marketing Site | Next |
-| 2 | Authentication & SaaS Foundation | Pending |
+| 1 | Marketing Site | **Complete** |
+| 2 | Authentication & SaaS Foundation | Next |
 | 3 | Facility & Court Management | Pending |
 | 4 | Booking Engine | Pending |
 | 5 | Philippine Payments & Receipts | Pending |

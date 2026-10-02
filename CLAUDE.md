@@ -5,8 +5,8 @@ operating contract for working in this repository.
 
 ## Status
 
-Phase 0 (Project Foundation) is complete. See `PHASE_STATUS.md`.
-Next phase: **Phase 1 — Marketing Site**.
+Phases 0 and 1 are complete. See `PHASE_STATUS.md`.
+Next phase: **Phase 2 — Authentication & SaaS Foundation**.
 
 ## Stack
 
