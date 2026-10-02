@@ -182,9 +182,9 @@ roadmap.
 | 3 | Facility & Court Management | **Complete** |
 | 4 | Booking Engine | **Complete** |
 | 5 | Philippine Payments & Receipts | **Complete** |
-| 6 | Customer / Player CRM | Pending |
-| 7 | Memberships & Packages | Pending |
-| 8 | Events, Open Play & Tournaments | Pending |
+| 6 | Customer / Player CRM | **Complete** |
+| 7 | Memberships & Packages | **Complete** |
+| 8 | Events, Open Play & Tournaments | **Complete** |
 | 9 | POS & Product Sales | Next |
 | 10 | Inventory | Pending |
 | 11 | Staff & Operations | Pending |
