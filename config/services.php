@@ -35,4 +35,18 @@ return [
         ],
     ],
 
+    /*
+    |--------------------------------------------------------------------------
+    | PayMongo
+    |--------------------------------------------------------------------------
+    | Primary Philippine gateway for GCash, Maya and cards (plan.md §13).
+    | Credentials are read from the environment; nothing is ever committed.
+    | PayMongo amounts are centavos, so weights must sum to 10000.
+    */
+
+    'paymongo' => [
+        'secret_key' => env('PAYMONGO_SECRET_KEY'),
+        'webhook_secret' => env('PAYMONGO_WEBHOOK_SECRET'),
+        'base_url' => env('PAYMONGO_BASE_URL', 'https://api.paymongo.com/v1'),
+    ],
 ];

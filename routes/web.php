@@ -4,6 +4,8 @@ use App\Http\Controllers\Admin\BranchController;
 use App\Http\Controllers\Admin\CourtController;
 use App\Http\Controllers\BookingController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\PaymentController;
+use App\Http\Controllers\PaymentWebhookController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Site\MarketingController;
 use App\Http\Controllers\Site\SeoController;
@@ -37,6 +39,33 @@ Route::get('/blog', [MarketingController::class, 'blog'])->name('blog.index');
 
 Route::get('/book', [BookingController::class, 'show'])->name('book.index');
 Route::post('/book', [BookingController::class, 'store'])->name('book.store');
+
+/*
+|--------------------------------------------------------------------------
+| Payments (Phase 5)
+|--------------------------------------------------------------------------
+| The webhook is unauthenticated by necessity but signature-verified, so it
+| is kept out of the auth and CSRF groups.
+*/
+
+Route::get('/payments/webhook', [PaymentWebhookController::class, 'handle'])
+    ->name('payments.webhook');
+Route::post('/payments/webhook', [PaymentWebhookController::class, 'handle'])
+    ->name('payments.webhook.post');
+
+Route::get('/payments/return/{reference}', [PaymentController::class, 'returned'])
+    ->name('payments.return');
+Route::get('/payments/cancelled/{reference}', [PaymentController::class, 'cancelled'])
+    ->name('payments.cancelled');
+
+Route::middleware('auth')->group(function (): void {
+    Route::get('/bookings/{booking}/pay', [PaymentController::class, 'create'])
+        ->name('payments.create');
+    Route::post('/bookings/{booking}/pay', [PaymentController::class, 'checkout'])
+        ->name('payments.checkout');
+    Route::get('/payments/{payment}/receipt', [PaymentController::class, 'receipt'])
+        ->name('payments.receipt');
+});
 
 /*
 |--------------------------------------------------------------------------
