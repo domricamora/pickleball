@@ -42,6 +42,14 @@ class Branch extends Model
     use BelongsToOrganization, HasFactory, SoftDeletes;
 
     /**
+     * @return HasMany<Court, $this>
+     */
+    public function courts(): HasMany
+    {
+        return $this->hasMany(Court::class);
+    }
+
+    /**
      * @return HasMany<User, $this>
      */
     public function users(): HasMany

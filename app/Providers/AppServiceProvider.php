@@ -2,6 +2,11 @@
 
 namespace App\Providers;
 
+use App\Models\Branch;
+use App\Models\Court;
+use App\Policies\BranchPolicy;
+use App\Policies\CourtPolicy;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -19,6 +24,8 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
+        // Authorisation is always checked server-side via these policies.
+        Gate::policy(Branch::class, BranchPolicy::class);
+        Gate::policy(Court::class, CourtPolicy::class);
     }
 }

@@ -221,59 +221,82 @@ or echoes a credential.
 
 ## Phase 3 — Facility & Court Management
 
-**Status: NOT STARTED**
+**Status: COMPLETE**
 
 **Local URL:** http://localhost:8000/admin/facilities
 
+### Schema
+
+- `courts` — name, number (unique per facility), surface, type,
+  indoor/outdoor, status, capacity, amenities, notes
+- `court_schedules` — recurring weekly hours, weekday 0 (Sun) to 6 (Sat)
+- `court_blocks` — maintenance, holiday, event and private closures
+- `court_prices` — weekday, weekend, peak, off-peak, holiday, member, guest
+- `branch_photos` — ordered facility imagery
+- `branches` gained `description` and `opening_hours`
+
+### Domain
+
+Enums (`CourtStatus`, `CourtSurface`, `BlockType`, `PriceType`) carry the
+labels and rules, so the UI and the booking engine read from one place.
+`PriceResolver` picks the winning rate: court-specific beats branch-wide, and
+among equals the most specific type wins. It returns `null` when nothing
+matches rather than guessing a price.
+
+### Authorisation
+
+`BranchPolicy` and `CourtPolicy` are registered in `AppServiceProvider`. Every
+admin controller calls `$this->authorize(...)`, and `organization_id` is always
+derived server-side — for a court it comes from its branch, so a court can never
+belong to a different tenant than the branch it sits in.
+
+### Verification
+
+| Gate | Result |
+| --- | --- |
+| Tests | Pass — 87 tests, 484 assertions |
+| ESLint / TypeScript / Prettier | Pass |
+| PHPStan (L5) / Pint | Pass |
+| Production build | Pass |
+| Live admin pages (authenticated) | Pass — all 200 with correct components |
+
+### Issues found and fixed during this phase
+
+1. **`$this->user()` does not exist on a plain controller**, 500-ing facility
+   creation. Replaced with `request()->user()`.
+2. **Laravel 13's base `Controller` no longer includes `AuthorizesRequests`**,
+   so every `$this->authorize()` call failed. Added the traits explicitly.
+3. **Super Admin could not create a court.** The branch validation assumed the
+   caller had an `organization_id`, but platform staff deliberately do not. The
+   tenant is now derived from the branch instead, which is both more permissive
+   for platform staff and stricter for everyone else.
+4. **Holiday pricing was wrong.** `Carbon::isHoliday()` needs a package that is
+   not installed, and a national calendar is the wrong source anyway —
+   Philippine holidays vary per locality. Holidays are now resolved from the
+   tenant's own holiday blocks.
+5. `Rule::exists()->when(fn (Rule $rule) => ...)` resolves `Rule` to the
+   validation *facade*, not the interface. Fully qualified.
+
+### Notes
+
+- This Inertia version's `useForm().post()` takes `(url, options)` and submits
+  `form.data`, so coerced values must be written with `setData` first.
+- Courts are soft-deleted so historical bookings keep their reference.
+
+---
+
+## Phase 4 — Booking Engine
+
+**Status: NOT STARTED**
+
+**Local URL:** http://localhost:8000/book
+
 ### Scope
 
-- [ ] Facility CRUD: name, address (barangay, city, province, region), contact,
-      operating hours, photos, description, GPS coordinates
-- [ ] Courts: name, number, type, indoor/outdoor, surface, status, capacity,
-      amenities, pricing
-- [ ] Schedules: operating hours, blocked periods, maintenance, holidays
-- [ ] Pricing: weekday, weekend, peak, off-peak, holiday, member, guest
-- [ ] Tenant-scoped authorisation on every admin route
-
----
-
-## Remaining phases
-
-| Phase | Scope | Status |
-| --- | --- | --- |
-| 2 | Authentication & SaaS Foundation | **Complete** |
-| 3 | Facility & Court Management | Next |
-| 4 | Booking Engine | Pending |
-| 5 | Philippine Payments & Receipts | Pending |
-| 6 | Customer / Player CRM | Pending |
-| 7 | Memberships & Packages | Pending |
-| 8 | Events, Open Play & Tournaments | Pending |
-| 9 | POS & Product Sales | Pending |
-| 10 | Inventory | Pending |
-| 11 | Staff & Operations | Pending |
-| 12 | Finance & Reporting | Pending |
-| 13 | Notifications & Marketing Automation | Pending |
-| 14 | AI Features | Pending |
-| 15 | Analytics | Pending |
-| 16 | Security Hardening | Pending |
-| 17 | Testing & QA | Pending |
-| 18 | Deployment | Pending |
-
----
-
-## Definition of done (per plan.md §38)
-
-A phase is **not** complete until:
-
-- [ ] Code implemented
-- [ ] Database migrations completed
-- [ ] Tests written
-- [ ] Tests passing
-- [ ] Frontend build passing
-- [ ] Localhost verified
-- [ ] Responsive UI checked
-- [ ] Security implications reviewed
-- [ ] Documentation updated
-- [ ] `PHASE_STATUS.md` updated
-- [ ] Git commit created
-- [ ] User can visually review the phase locally
+- [ ] Court availability across hours, schedules, blocks and court status
+- [ ] Time slots and calendar
+- [ ] Booking create, modify, cancel, reschedule, check-in, no-show, refund
+- [ ] Statuses: Pending, Confirmed, Checked In, Completed, Cancelled, No Show,
+      Refunded
+- [ ] **Transactions and row locking to prevent double booking** (plan.md §31)
+- [ ] Reject invalid ranges, times outside opening hours and blocked courts

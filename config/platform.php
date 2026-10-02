@@ -55,6 +55,50 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Weekdays
+    |--------------------------------------------------------------------------
+    | Indexed 0 (Sunday) to 6 (Saturday) to match PHP's day-of-week
+    | numbering, which is what the court schedules store.
+    */
+
+    'weekdays' => [
+        'Sunday',
+        'Monday',
+        'Tuesday',
+        'Wednesday',
+        'Thursday',
+        'Friday',
+        'Saturday',
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Regions
+    |--------------------------------------------------------------------------
+    | Philippine regions used by the facility address form (plan.md §32).
+    */
+
+    'regions' => [
+        'NCR' => 'National Capital Region',
+        'CAR' => 'Cordillera Administrative Region',
+        'Region I' => 'Ilocos',
+        'Region II' => 'Cagayan Valley',
+        'Region III' => 'Central Luzon',
+        'Region IV-A' => 'CALABARZON',
+        'Region IV-B' => 'MIMAROPA',
+        'Region V' => 'Bicol',
+        'Region VI' => 'Western Visayas',
+        'Region VII' => 'Central Visayas',
+        'Region VIII' => 'Eastern Visayas',
+        'Region IX' => 'Zamboanga Peninsula',
+        'Region X' => 'Northern Mindanao',
+        'Region XI' => 'Davao',
+        'Region XII' => 'SOCCSKSARGEN',
+        'Region XIII' => 'Caraga',
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
     | Contact
     |--------------------------------------------------------------------------
     | Placeholder contact details for the platform itself. A tenant facility
