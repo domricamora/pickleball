@@ -1,0 +1,25 @@
+# Safety net for the WAMP document root.
+#
+# WAMP's DocumentRoot is c:\wamp64\www, so this project sits at /p and Apache will
+# happily serve every file in it -- .env, plan.md, package.json and all. With
+# the alias in c:\wamp64\alias\pickleplay.conf pointing /p at public/ this file
+# is bypassed, but until that alias is active (or if it is ever removed) it is
+# the only thing standing between the repo and the network.
+#
+# The correct setup is still: document root = <app>/public.
+#
+# Note: this file only blocks and forwards. It deliberately does NOT try to
+# strip a mount point -- Laravel's routes are unprefixed, so rewriting /p/about
+# to public/about still reaches Laravel as "/about" and routing works.
+
+Options -Indexes
+
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+
+    # Never serve anything outside public/: dotfiles, source, config, logs,
+    # dependencies. Kept in sync with the deny list in public/.htaccess.
+    RewriteRule (^|/)\. - [F,L]
+    RewriteRule ^(app|bootstrap|config|database|docs|node_modules|resources|routes|storage|tests|vendor)(/|$) - [F,L,NC]
+    RewriteRule ^(artisan|composer\.(json|lock)|package(-lock)?\.json|phpunit\.xml|phpstan\.neon|vite\.config\.js|tsconfig\.json|\.editorconfig|.*\.md)$ - [F,L,NC]
+</IfModule>

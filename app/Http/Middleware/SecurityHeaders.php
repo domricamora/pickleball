@@ -19,6 +19,24 @@ class SecurityHeaders
     {
         $response = $next($request);
 
+        /*
+         * The Vite dev server is a different origin from the app, so a
+         * production-only CSP silently blocks every script in development and
+         * the page renders blank. The dev origin is allowed here and only
+         * here; production keeps 'self'.
+         */
+        $dev = app()->environment('local');
+        $viteOrigin = 'http://127.0.0.1:5173';
+
+        $scriptSrc = $dev
+            ? "'self' {$viteOrigin} 'unsafe-inline' 'unsafe-eval'"
+            : "'self'";
+
+        $connectSrc = $dev ? "'self' {$viteOrigin} ws://127.0.0.1:5173" : "'self'";
+        $styleSrc = $dev
+            ? "'self' {$viteOrigin} 'unsafe-inline'"
+            : "'self' 'unsafe-inline'";
+
         $headers = [
             'X-Content-Type-Options' => 'nosniff',
             'X-Frame-Options' => 'DENY',
@@ -27,11 +45,11 @@ class SecurityHeaders
             'Permissions-Policy' => 'geolocation=(), microphone=(), camera=()',
             'Content-Security-Policy' => implode('; ', [
                 "default-src 'self'",
-                "script-src 'self'",
-                "style-src 'self' 'unsafe-inline'",
+                "script-src {$scriptSrc}",
+                "style-src {$styleSrc}",
                 "img-src 'self' data: https:",
-                "font-src 'self'",
-                "connect-src 'self'",
+                "font-src 'self' data:",
+                "connect-src {$connectSrc}",
                 // Plugins and legacy content are a common XSS vector.
                 "object-src 'none'",
                 "frame-src 'none'",

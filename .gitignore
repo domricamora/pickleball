@@ -47,3 +47,9 @@ _ide_helper.php
 # Local dev server logs
 /storage/serve.*
 /storage/*.log
+/storage/vite.err
+
+# Throwaway QA scripts and screenshots. These are verification aids, never
+# deliverables: committing them would push page captures into the repo.
+/storage/shots
+/storage/slice.php

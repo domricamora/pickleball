@@ -22,6 +22,20 @@ class HandleInertiaRequests extends Middleware
     }
 
     /**
+     * The URL prefix the app is mounted under, with no trailing slash.
+     *
+     * Derived from the request rather than configuration so the same build
+     * works at the domain root and under a subdirectory: "" on
+     * `php artisan serve`, "/p/public" under the WAMP document root.
+     */
+    protected function basePath(Request $request): string
+    {
+        // getBaseUrl() is the directory the front controller lives in, e.g.
+        // "/p/public" or "/p". Laravel keeps this in step with the request.
+        return rtrim(str_replace('\\', '/', $request->getBaseUrl()), '/');
+    }
+
+    /**
      * Define the props that are shared by default with every Inertia response.
      *
      * Brand and navigation live in config/platform.php so no component
@@ -41,6 +55,23 @@ class HandleInertiaRequests extends Middleware
                 'description' => config('platform.description'),
             ],
 
+            /*
+             * Where the app is mounted, e.g. "/p/public" under WAMP or "" when
+             * the document root already points at public/.
+             *
+             * Every in-app link is written root-relative ("/facilities"), which
+             * a browser resolves against the domain root and so silently drops
+             * the mount point. The front end prefixes these with basePath; see
+             * withBasePath() in resources/js/lib/format.ts.
+             */
+            'basePath' => $this->basePath($request),
+
+            /*
+             * Nav hrefs stay unprefixed in config so they remain the plain route
+             * names ("/facilities") in one place. The front end prefixes them
+             * with basePath when rendering -- see withBasePath() in
+             * resources/js/lib/format.ts.
+             */
             'nav' => config('platform.nav'),
             'coverage' => config('platform.coverage'),
             'social' => config('platform.social'),

@@ -8,6 +8,11 @@ export interface NavItem {
 }
 
 export interface SharedProps {
+    /**
+     * Where the app is mounted, e.g. "/p/public" under WAMP, "" at the domain
+     * root. Prefixed onto root-relative links by withBasePath().
+     */
+    basePath: string;
     brand: {
         name: string;
         tagline: string;

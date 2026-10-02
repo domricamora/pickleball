@@ -15,10 +15,19 @@ export default defineConfig({
                 bunny('Plus Jakarta Sans', {
                     weights: [400, 500, 600, 700, 800],
                 }),
+                // Display face for the marketing headlines. Italic is what
+                // carries the sporty slant, so both cuts are shipped.
+                bunny('Archivo', {
+                    weights: [700, 800, 900],
+                    styles: ['normal', 'italic'],
+                }),
             ],
         }),
         react(),
-        inertia(),
+        // Client-rendered SPA: there is no SSR entry. Without this the plugin
+        // treats app.tsx as one, wraps it in server bootstrap and calls
+        // createRoot() with no DOM, which fails every render.
+        inertia({ ssr: false }),
         tailwindcss(),
     ],
     resolve: {
@@ -27,6 +36,10 @@ export default defineConfig({
         },
     },
     server: {
+        // Pin to IPv4: the default localhost resolves to ::1, which a browser
+        // opened on 127.0.0.1 cannot reach, leaving a blank page.
+        host: '127.0.0.1',
+        port: 5173,
         watch: {
             ignored: ['**/storage/framework/views/**'],
         },
