@@ -188,13 +188,13 @@ roadmap.
 | 9 | POS & Product Sales | **Complete** |
 | 10 | Inventory | **Complete** |
 | 11 | Staff & Operations | **Complete** |
-| 12 | Finance & Reporting | Next |
-| 13 | Notifications & Marketing Automation | Pending |
-| 14 | AI Features | Pending |
-| 15 | Analytics | Pending |
-| 16 | Security Hardening | Pending |
-| 17 | Testing & QA | Pending |
-| 18 | Deployment | Pending |
+| 12 | Finance & Reporting | **Complete** |
+| 13 | Notifications & Marketing Automation | **Complete** |
+| 14 | AI Features | **Complete** |
+| 15 | Analytics | **Complete** |
+| 16 | Security Hardening | **Complete** |
+| 17 | Testing & QA | **Complete** |
+| 18 | Deployment | Next |
 
 ---
 

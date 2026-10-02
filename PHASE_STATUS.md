@@ -626,12 +626,140 @@ identical; a separate `is_complete` flag would only duplicate `completed_at`.
 
 ## Phase 12 — Finance & Reporting
 
-**Status: NOT STARTED**
+**Status: COMPLETE**
 
-### Scope (plan.md §20)
+Revenue is **derived, never copied**: every figure is computed from payments,
+sales, memberships and bookings. A report table would be a second home for a
+number and could silently drift. Only expenses are stored, because an expense
+has no other home.
 
-- [ ] Daily sales, court, product, membership and event revenue
-- [ ] Expenses, refunds, payment methods, outstanding amounts
-- [ ] Revenue by branch, court, and day/time
-- [ ] Dashboard KPIs: revenue, bookings, occupancy, average booking value,
-      active members, new and repeat customers, product sales
+Refunds net off at the source. Utilisation counts only bookings that happened,
+so a cancellation cannot make a court look busy. KPIs are safe with no data.
+
+**Reporting is context-sensitive and now documented**: the tenant scope is
+inactive without a signed-in user, so a report generated from a console or
+queue spans every facility. The test asserts the real path — staff reading
+reports while authenticated.
+
+**Tests** — 15 tests.
+
+### Bugs found
+
+1. The membership revenue join was ambiguous on `created_at` (both tables have
+   one) — a real SQL error.
+2. `Payment.method` is cast to an enum, which cannot be an array key, so the
+   payment-method breakdown threw a TypeError.
+3. `created_at`/`paid_at` are guarded by Eloquent, so my tests were silently
+   backdating nothing.
+
+---
+
+## Phase 13 — Notifications & Marketing Automation
+
+**Status: COMPLETE**
+
+Nothing is sent synchronously: a row records the intent and a queued job
+delivers. Delivery is idempotent, because queues retry. A failure records its
+reason on the notification rather than only in the dead-letter table.
+
+Consent is enforced per channel **and per purpose**: transactional messages
+about a booking the player made are always allowed, marketing needs the
+matching opt-in, and email consent does not imply SMS consent. SMS is modelled
+but has no provider wired, and says so in a log line rather than pretending.
+
+**Tests** — 12 tests.
+
+---
+
+## Phase 14 — AI Features
+
+**Status: COMPLETE**
+
+`AiGuard` is the single place the plan's rule is expressed: AI may read facility
+data but may never create or move a booking, take a payment, issue a refund,
+adjust stock or change a price. The assistant also cannot be constructed
+without one facility to read.
+
+Answers are **computed, not generated** — every figure comes from the
+facility's own data through the existing services, so an answer cannot
+hallucinate a number. A language model would sit in front to phrase the
+result, not to invent it.
+
+**Tests** — 13 tests.
+
+### Bugs found
+
+1. The intent classifier matched whole keywords and "busiest" does not contain
+   "busy", so natural questions fell through to the fallback.
+2. With no booking history every hour was zero and `arsort` still returned
+   three keys, so the assistant reported midnight as the busiest hour.
+
+---
+
+## Phase 15 — Analytics
+
+**Status: COMPLETE**
+
+`analytics_events` is deliberately not tenant-scoped: a visitor exists before
+choosing a facility, so `organization_id` is nullable and scoping is explicit
+in the service.
+
+Nothing identifying is stored. Events are written directly, not queued,
+because losing events to a queue outage would quietly corrupt the funnel.
+
+Conversion is step-to-step, not against the first step. The first step has no
+conversion; 0 into 0 is undefined; a funnel that grows past 100% is reported
+as it happened rather than capped.
+
+**Tests** — 13 tests.
+
+---
+
+## Phase 16 — Security Hardening
+
+**Status: COMPLETE**
+
+The audit trail is append-only — `AuditLog::update()` and `delete()` both return
+false, because a log that can be edited is not a log. The raw IP is never
+stored, only a keyed HMAC. Secrets are redacted recursively. A failure to write
+an audit row is reported but never throws: losing a booking because the log
+table is full is worse than losing a log line.
+
+Security headers are applied by middleware to every response, so a new route
+cannot ship without them. HSTS is sent only over HTTPS.
+
+Rate limits are keyed per visitor, so one person cannot lock out everyone
+behind the same address.
+
+`withRateLimiting()` does not exist on Laravel 13's `ApplicationBuilder`, so
+the limiters follow the existing convention in `FortifyServiceProvider`.
+
+**Tests** — 14 tests. The tests found a missing `object-src` and `frame-src` in
+the CSP; both are now sent and asserted.
+
+---
+
+## Phase 17 — Testing & QA
+
+**Status: COMPLETE**
+
+`tests/Feature/Qa/EdgeCaseTest.php` covers the cases plan.md §25 names
+explicitly: boundary times, simultaneous bookings, payment failure, expired
+sessions, blocked courts, invalid schedules and timezone boundaries.
+
+One test documents a real limitation rather than hiding it: with no signed-in
+user the tenant scope is intentionally off, so an unauthenticated read sees
+every tenant. That is by design for console and queue contexts, and the risk is
+written down rather than papered over.
+
+**Tests** — 17 tests. Total suite: **347 tests / 1000 assertions**.
+
+---
+
+## Phase 18 — Deployment
+
+**Status: NOT STARTED — needs explicit approval**
+
+Target `pickleball.deskpulse.click` via `ck.deskpulse.click`. This deploys to a
+live production server, so it is not started without a direct instruction at
+that moment.
