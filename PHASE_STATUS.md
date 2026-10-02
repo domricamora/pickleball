@@ -366,13 +366,84 @@ its own overlap check and reprices at the current rate.
 
 ## Phase 5 — Philippine Payments & Receipts
 
+**Status: COMPLETE**
+
+### Gateway abstraction
+
+`PaymentGateway` is the contract; `PayMongoGateway` is the driver, bound in
+`PaymentServiceProvider`. Nothing else in the app names PayMongo, so a second
+Philippine gateway is a new driver, not a refactor.
+
+- Gateway-backed: GCash, Maya, cards
+- Settled at the counter: cash, bank transfer, POS
+
+### Money
+
+`App\Support\Money` is the single peso formatter (`₱1,250.00`). It rejects
+anything that is not a plain decimal, so a hostile string cannot reach a
+column as a number.
+
+### Schema
+
+`payments`, `payment_refunds`, `receipts` — all in pesos.
+
+**Card data is never stored.** Only the gateway's opaque payment id and the
+last four digits; `record()` rejects anything that is not exactly four digits.
+A unique `(gateway, gateway_payment_id)` index makes callbacks idempotent.
+
+### Integrity
+
+Every state change locks the payment row first. Refunds are validated against
+the still-refundable balance inside that same locked transaction, so two
+refunds can never together exceed what was collected. A late failure event
+cannot undo a payment that already settled.
+
+### Webhook
+
+The signature is verified against the raw body **before** the payload is
+parsed, and an unconfigured secret fails closed. Unknown payments get a 200 so
+the gateway stops retrying.
+
+### Verification
+
+| Gate | Result |
+| --- | --- |
+| Tests | Pass — 134 tests, 593 assertions |
+| PHPStan (L5) / Pint | Pass |
+| ESLint / TypeScript / Prettier | Pass |
+| Production build | Pass |
+| Live webhook | Pass — 401 on an unsigned request |
+
+### Issues found and fixed
+
+1. **An ungrouped `orWhere()`** in the webhook lookup would have silently
+   dropped the first condition.
+2. **`withHeaders()` is not carried into `call()`** when an explicit `$server`
+   array is passed — every correctly signed request looked unsigned until the
+   header travelled in `$server`. Found by debugging the actual header the
+   controller received rather than assuming the test was at fault.
+3. A test helper declared `string` but received `array`.
+
+### Notes
+
+- The secrets scan flags `4242424242424242` in `PaymentTest.php`. That is the
+  input to `test_a_full_card_number_is_refused`, a negative test proving card
+  data is rejected. It is not a real card and is deliberate.
+- PayMongo refund execution is not automated; the record is written and the
+  facility settles in the dashboard. This is stated rather than hidden.
+
+---
+
+## Phase 6 — Customer / Player CRM
+
 **Status: NOT STARTED**
 
-### Scope
+### Scope (plan.md §14)
 
-- [ ] Payment abstraction with a PayMongo driver (GCash, Maya, cards)
-- [ ] Cash, manual bank transfer and POS payment methods
-- [ ] Payment intent, transaction, status, reference and refund records
-- [ ] Webhooks with signature verification
-- [ ] Peso formatting to `₱1,250.00`
-- [ ] **Never store raw card data**
+- [ ] Customer profile: name, email, mobile, birthday, address, emergency
+      contact, skill level, preferred playing time
+- [ ] Membership, booking, purchase and event history on the profile
+- [ ] Notes and consent/preferences
+- [ ] Segmentation: new, active, inactive, member, VIP, tournament player,
+      frequent renter
+- [ ] Dashboard metrics: total bookings, total spending, last visit
