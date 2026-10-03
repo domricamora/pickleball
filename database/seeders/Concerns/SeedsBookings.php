@@ -14,7 +14,6 @@ use Illuminate\Support\Carbon;
 // global helper inside the test suite, which is why a seeder that only ever
 // ran under PHPUnit would look fine and then fail in production.
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\Fake;
 
 /**
  * Ninety days of court bookings and the payments behind them.
