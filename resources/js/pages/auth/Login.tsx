@@ -1,4 +1,4 @@
-import { Form, Link, useForm, usePage } from '@inertiajs/react';
+import { Link, useForm, usePage } from '@inertiajs/react';
 import AuthLayout from '@/layouts/AuthLayout';
 import Seo from '@/components/seo/Seo';
 import { AuthButton, TextField } from '@/components/auth/AuthFields';
@@ -8,6 +8,19 @@ interface LoginProps {
     canResetPassword?: boolean;
 }
 
+/**
+ * A plain <form> is deliberate, not an oversight.
+ *
+ * Inertia's <Form> renders its own onSubmit *after* spreading props:
+ *
+ *     createElement('form', { ...props, onSubmit: (e) => { e.preventDefault(); ... } })
+ *
+ * so an onSubmit passed to it is discarded. The form then fell back to native
+ * browser submission -- action="" and method="get" -- which put the password in
+ * the URL and re-rendered /login with no error shown. We call preventDefault()
+ * ourselves, so a plain <form> is correct and keeps useForm's processing state
+ * and error wiring exactly as they were.
+ */
 export default function Login({ canResetPassword = true }: LoginProps) {
     const { errors, status } = usePage<{ errors: Record<string, string>; status?: string }>().props;
 
@@ -31,7 +44,7 @@ export default function Login({ canResetPassword = true }: LoginProps) {
                 </p>
             )}
 
-            <Form onSubmit={submit} className="space-y-5">
+            <form onSubmit={submit} className="space-y-5">
                 <TextField
                     label="Email"
                     name="email"
@@ -81,7 +94,7 @@ export default function Login({ canResetPassword = true }: LoginProps) {
                 </label>
 
                 <AuthButton loading={form.processing}>Log in</AuthButton>
-            </Form>
+            </form>
 
             <p className="text-slate mt-6 text-center text-sm">
                 New here?{' '}

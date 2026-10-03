@@ -1,4 +1,4 @@
-import { Form, useForm } from '@inertiajs/react';
+import { useForm } from '@inertiajs/react';
 import AuthLayout from '@/layouts/AuthLayout';
 import Seo from '@/components/seo/Seo';
 import { AuthButton, TextField } from '@/components/auth/AuthFields';
@@ -19,7 +19,7 @@ export default function ConfirmPassword() {
         >
             <Seo title="Confirm password" description="Confirm your password to continue." noindex />
 
-            <Form onSubmit={submit} className="space-y-5">
+            <form onSubmit={submit} className="space-y-5">
                 <TextField
                     label="Password"
                     name="password"
@@ -33,7 +33,7 @@ export default function ConfirmPassword() {
                 />
 
                 <AuthButton loading={form.processing}>Confirm</AuthButton>
-            </Form>
+            </form>
         </AuthLayout>
     );
 }

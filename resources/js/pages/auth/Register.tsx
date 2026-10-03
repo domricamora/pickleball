@@ -1,9 +1,14 @@
-import { Form, Link, useForm, usePage } from '@inertiajs/react';
+import { Link, useForm, usePage } from '@inertiajs/react';
 import AuthLayout from '@/layouts/AuthLayout';
 import Seo from '@/components/seo/Seo';
 import { AuthButton, TextField } from '@/components/auth/AuthFields';
 import { withBasePath } from '@/lib/format';
 
+/**
+ * A plain <form> is deliberate, not an oversight -- see the note in Login.tsx.
+ * Inertia's <Form> discards an onSubmit prop, which sent this form back as a
+ * native GET with the password in the URL.
+ */
 export default function Register() {
     const { errors } = usePage<{ errors: Record<string, string> }>().props;
 
@@ -27,7 +32,7 @@ export default function Register() {
         >
             <Seo title="Register" description="Create a PicklePlay account to book pickleball courts." noindex />
 
-            <Form onSubmit={submit} className="space-y-5">
+            <form onSubmit={submit} className="space-y-5">
                 <TextField
                     label="Full name"
                     name="name"
@@ -84,7 +89,7 @@ export default function Register() {
                 />
 
                 <AuthButton loading={form.processing}>Create account</AuthButton>
-            </Form>
+            </form>
 
             <p className="text-slate mt-6 text-center text-sm">
                 Already have an account?{' '}

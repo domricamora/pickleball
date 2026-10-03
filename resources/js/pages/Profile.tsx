@@ -1,4 +1,4 @@
-import { Form, useForm, usePage } from '@inertiajs/react';
+import { useForm, usePage } from '@inertiajs/react';
 import PageLayout, { Section } from '@/layouts/PageLayout';
 import Seo from '@/components/seo/Seo';
 import { TextField } from '@/components/auth/AuthFields';
@@ -59,11 +59,11 @@ export default function Profile({ user, mustVerifyEmail, status }: ProfileProps)
                 {mustVerifyEmail && !shared.auth.user?.email_verified_at && (
                     <div className="border-energetic-400 bg-night-850 text-mist-50 rounded-card mt-6 border-l-4 px-4 py-3 text-sm">
                         <p className="font-semibold">Email not verified.</p>
-                        <Form action={withBasePath('/email/verification-notification')} method="post" className="mt-2">
+                        <form action={withBasePath('/email/verification-notification')} method="post" className="mt-2">
                             <button type="submit" className="text-energetic-300 font-semibold underline">
                                 Resend the verification email
                             </button>
-                        </Form>
+                        </form>
                     </div>
                 )}
 
@@ -76,7 +76,7 @@ type ProfileFormData = ReturnType<typeof useForm<{ name: string; email: string; 
 
 function ProfileForm({ form, onSubmit }: { form: ProfileFormData; onSubmit: (e: React.FormEvent) => void }) {
     return (
-        <Form onSubmit={onSubmit} className="bg-night-850 border-hairline-dark mt-10 max-w-xl rounded-panel border p-7">
+        <form onSubmit={onSubmit} className="bg-night-850 border-hairline-dark mt-10 max-w-xl rounded-panel border p-7">
             <div className="space-y-5">
                 <TextField
                     label="Full name"
@@ -143,6 +143,6 @@ function ProfileForm({ form, onSubmit }: { form: ProfileFormData; onSubmit: (e: 
             >
                 {form.processing ? 'Saving…' : 'Save changes'}
             </button>
-        </Form>
+        </form>
     );
 }

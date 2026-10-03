@@ -1,4 +1,4 @@
-import { Form, Link, useForm, usePage } from '@inertiajs/react';
+import { Link, useForm, usePage } from '@inertiajs/react';
 import { useEffect } from 'react';
 import AuthLayout from '@/layouts/AuthLayout';
 import Seo from '@/components/seo/Seo';
@@ -57,14 +57,14 @@ export default function VerifyEmail({ status }: VerifyEmailProps) {
                         We sent a verification link to your email address. Click it to confirm your account.
                     </p>
 
-                    <Form
+                    <form
                         onSubmit={(event) => {
                             event.preventDefault();
                             form.post(withBasePath('/email/verification-notification'));
                         }}
                     >
                         <AuthButton loading={form.processing}>Resend verification email</AuthButton>
-                    </Form>
+                    </form>
 
                     <Link
                         href={withBasePath('/logout')}

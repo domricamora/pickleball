@@ -1,4 +1,4 @@
-import { Form, useForm } from '@inertiajs/react';
+import { useForm } from '@inertiajs/react';
 import AuthLayout from '@/layouts/AuthLayout';
 import Seo from '@/components/seo/Seo';
 import { AuthButton, TextField } from '@/components/auth/AuthFields';
@@ -26,7 +26,7 @@ export default function ResetPassword({ email, token }: ResetPasswordProps) {
         <AuthLayout title="Choose a new password" subtitle="Pick something strong you have not used before.">
             <Seo title="Reset password" description="Choose a new password for your PicklePlay account." noindex />
 
-            <Form onSubmit={submit} className="space-y-5">
+            <form onSubmit={submit} className="space-y-5">
                 <TextField
                     label="Email"
                     name="email"
@@ -63,7 +63,7 @@ export default function ResetPassword({ email, token }: ResetPasswordProps) {
                 />
 
                 <AuthButton loading={form.processing}>Reset password</AuthButton>
-            </Form>
+            </form>
         </AuthLayout>
     );
 }

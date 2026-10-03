@@ -1,4 +1,4 @@
-import { Form, Link, useForm, usePage } from '@inertiajs/react';
+import { Link, useForm, usePage } from '@inertiajs/react';
 import AuthLayout from '@/layouts/AuthLayout';
 import Seo from '@/components/seo/Seo';
 import { AuthButton, TextField } from '@/components/auth/AuthFields';
@@ -36,7 +36,7 @@ export default function TwoFactorChallenge({ recovery = false }: ChallengeProps)
                 </p>
             )}
 
-            <Form onSubmit={submit} className="space-y-5">
+            <form onSubmit={submit} className="space-y-5">
                 {useRecovery ? (
                     <TextField
                         label="Recovery code"
@@ -63,7 +63,7 @@ export default function TwoFactorChallenge({ recovery = false }: ChallengeProps)
                 )}
 
                 <AuthButton loading={form.processing}>Continue</AuthButton>
-            </Form>
+            </form>
 
             <div className="mt-6 text-center text-sm">
                 <button

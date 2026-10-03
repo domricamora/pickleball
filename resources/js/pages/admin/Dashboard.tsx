@@ -89,64 +89,55 @@ export default function Dashboard({
                     <div key={tile.label} className="border-hairline rounded-card border bg-white p-5">
                         <p className="text-slate text-sm font-medium">{tile.label}</p>
                         <p className={`font-display mt-1 truncate text-2xl font-extrabold ${tile.tone}`}>
-                            <div className="mt-6 grid gap-6 lg:grid-cols-2">
-                                <section>
-                                    <h2 className="font-display text-lg font-bold text-pickle-900">
-                                        Today&rsquo;s schedule
-                                    </h2>
-                                    <p className="text-slate mt-1 text-sm">Bookings still holding a court slot.</p>
-                                    {todays_bookings.length === 0 ? (
-                                        <EmptyPanel
-                                            title="No bookings today"
-                                            body="Nothing is on the schedule right now."
-                                        />
-                                    ) : (
-                                        <ul className="mt-3 space-y-2">
-                                            {todays_bookings.map((booking) => (
-                                                <li
-                                                    key={booking.id}
-                                                    className="border-hairline flex flex-wrap items-center justify-between gap-3 rounded-card border bg-white px-5 py-4"
-                                                >
-                                                    <div className="min-w-0">
-                                                        <p className="text-pickle-900 font-semibold">
-                                                            {booking.time}
-                                                            <span className="text-slate ml-2 font-normal">
-                                                                {booking.court}
-                                                            </span>
-                                                        </p>
-                                                        <p className="text-slate truncate text-sm">
-                                                            {booking.player} · {booking.reference}
-                                                        </p>
-                                                    </div>
-                                                    <StatusBadge
-                                                        label={booking.status.label}
-                                                        className={booking.status.badgeClass}
-                                                    />
-                                                </li>
-                                            ))}
-                                        </ul>
-                                    )}
-                                </section>
-
-                                <section>
-                                    <h2 className="font-display text-lg font-bold text-pickle-900">Revenue mix</h2>
-                                    <p className="text-slate mt-1 text-sm">Where the money came from.</p>
-                                    <ul className="border-hairline mt-3 divide-hairline divide-y rounded-panel border bg-white">
-                                        {revenue_by_source.map((row) => (
-                                            <li key={row.label} className="flex items-center justify-between px-5 py-4">
-                                                <span className="text-pickle-900 text-sm font-medium">{row.label}</span>
-                                                <span className="font-display text-pickle-700 font-bold">
-                                                    {row.amount}
-                                                </span>
-                                            </li>
-                                        ))}
-                                    </ul>
-                                </section>
-                            </div>
                             {tile.value}
                         </p>
                     </div>
                 ))}
+            </div>
+
+            <div className="mt-6 grid gap-6 lg:grid-cols-2">
+                <section>
+                    <h2 className="font-display text-lg font-bold text-pickle-900">Today&rsquo;s schedule</h2>
+                    <p className="text-slate mt-1 text-sm">Bookings still holding a court slot.</p>
+                    {todays_bookings.length === 0 ? (
+                        <EmptyPanel title="No bookings today" body="Nothing is on the schedule right now." />
+                    ) : (
+                        <ul className="mt-3 space-y-2">
+                            {todays_bookings.map((booking) => (
+                                <li
+                                    key={booking.id}
+                                    className="border-hairline flex flex-wrap items-center justify-between gap-3 rounded-card border bg-white px-5 py-4"
+                                >
+                                    <div className="min-w-0 flex-1">
+                                        <p className="text-pickle-900 font-semibold break-words">
+                                            {booking.time}
+                                            <span className="text-slate ml-2 inline-block font-normal">
+                                                {booking.court}
+                                            </span>
+                                        </p>
+                                        <p className="text-slate truncate text-sm">
+                                            {booking.player} · {booking.reference}
+                                        </p>
+                                    </div>
+                                    <StatusBadge label={booking.status.label} className={booking.status.badgeClass} />
+                                </li>
+                            ))}
+                        </ul>
+                    )}
+                </section>
+
+                <section>
+                    <h2 className="font-display text-lg font-bold text-pickle-900">Revenue mix</h2>
+                    <p className="text-slate mt-1 text-sm">Where the money came from.</p>
+                    <ul className="border-hairline mt-3 divide-hairline divide-y rounded-panel border bg-white">
+                        {revenue_by_source.map((row) => (
+                            <li key={row.label} className="flex items-center justify-between px-5 py-4">
+                                <span className="text-pickle-900 text-sm font-medium">{row.label}</span>
+                                <span className="font-display text-pickle-700 font-bold">{row.amount}</span>
+                            </li>
+                        ))}
+                    </ul>
+                </section>
             </div>
             <UtilisationSection rows={utilisation} />
 

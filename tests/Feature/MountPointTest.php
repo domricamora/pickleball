@@ -101,6 +101,47 @@ class MountPointTest extends TestCase
     }
 
     /**
+     * Inertia's <Form> silently discards an onSubmit prop.
+     *
+     * It renders its own handler after spreading props:
+     *
+     *     createElement('form', { ...props, onSubmit: (e) => { e.preventDefault(); ... } })
+     *
+     * so the caller's handler never runs. The form then falls back to native
+     * browser submission -- action="" and method="get" -- which reloads the page
+     * with the credentials in the query string and shows no error at all. Every
+     * auth screen presented exactly that way, and PHPUnit cannot see it because
+     * the bug is entirely in JavaScript.
+     *
+     * A plain <form> is correct here: these pages call preventDefault()
+     * themselves and then use useForm, which keeps processing state and errors.
+     */
+    public function test_no_form_relies_on_an_overridden_onsubmit(): void
+    {
+        $offenders = [];
+
+        foreach ($this->frontEndFiles() as $file) {
+            $contents = (string) file_get_contents($file);
+
+            // <Form ... onSubmit={...} /> -- the prop Inertia throws away.
+            preg_match_all('/<Form\b[^>]*\bonSubmit\s*=/', $contents, $matches);
+
+            foreach ($matches[0] as $match) {
+                $offenders[] = $file.': '.preg_replace('/\s+/', ' ', trim($match));
+            }
+        }
+
+        $this->assertSame(
+            [],
+            $offenders,
+            "Inertia's <Form> overwrites any onSubmit, so these forms silently fall back\n"
+            ."to native GET submission and put the password in the URL.\n"
+            ."Use a plain <form onSubmit={...}> and call preventDefault() yourself.\n"
+            .implode("\n", $offenders)
+        );
+    }
+
+    /**
      * The server must keep telling the client where it is mounted, otherwise
      * withBasePath() has nothing to prefix with.
      */

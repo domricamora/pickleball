@@ -1,4 +1,4 @@
-import { Form, useForm } from '@inertiajs/react';
+import { useForm } from '@inertiajs/react';
 import { AdminPage } from '@/components/admin/AdminUi';
 import { SelectField, SubmitRow, TextAreaField, TextField } from '@/components/admin/FormFields';
 import { withBasePath } from '@/lib/format';
@@ -110,7 +110,7 @@ export default function FacilityForm({ regions, facility }: FacilityFormProps) {
             title={editing ? `Edit ${facility?.name}` : 'Add a facility'}
             subtitle="Address, contact and map coordinates for this court location."
         >
-            <Form onSubmit={submit} className="border-hairline max-w-3xl rounded-panel border bg-white p-7">
+            <form onSubmit={submit} className="border-hairline max-w-3xl rounded-panel border bg-white p-7">
                 <div className="space-y-5">
                     <div className="grid gap-5 sm:grid-cols-3">
                         <div className="sm:col-span-2">
@@ -259,7 +259,7 @@ export default function FacilityForm({ regions, facility }: FacilityFormProps) {
                     submitLabel={editing ? 'Save changes' : 'Create facility'}
                     cancelHref={cancelHref}
                 />
-            </Form>
+            </form>
         </AdminPage>
     );
 }
